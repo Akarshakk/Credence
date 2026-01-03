@@ -33,9 +33,10 @@ class ExpenseCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
-                child: Text(
+                child: Icon(
                   category.icon,
-                  style: const TextStyle(fontSize: 24),
+                  size: 24,
+                  color: category.color,
                 ),
               ),
             ),
@@ -48,8 +49,8 @@ class ExpenseCard extends StatelessWidget {
                 children: [
                   // Show merchant name if available, otherwise category
                   Text(
-                    expense.merchant?.isNotEmpty == true
-                        ? expense.merchant!
+                    expense.merchant.isNotEmpty == true
+                        ? expense.merchant
                         : category.displayName,
                     style: AppTextStyles.body1.copyWith(
                       fontWeight: FontWeight.w600,
@@ -60,7 +61,7 @@ class ExpenseCard extends StatelessWidget {
                   const SizedBox(height: 2),
                   // Show category and description
                   Text(
-                    expense.merchant?.isNotEmpty == true
+                    expense.merchant.isNotEmpty == true
                         ? category.displayName + (expense.description.isNotEmpty ? ' • ${expense.description}' : '')
                         : (expense.description.isNotEmpty ? expense.description : _formatTime(expense.date)),
                     style: AppTextStyles.caption,

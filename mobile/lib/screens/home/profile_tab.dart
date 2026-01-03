@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../config/theme.dart';
+import '../../providers/theme_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/expense_provider.dart';
 import '../../providers/income_provider.dart';
 import '../../providers/analytics_provider.dart';
 import '../auth/login_screen.dart';
+import '../feature_selection_screen.dart';
 import 'add_income_screen.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -21,7 +23,6 @@ class _ProfileTabState extends State<ProfileTab> {
   bool _isUploadingImage = false;
 
   Future<void> _pickAndUploadImage() async {
-    final ImagePicker picker = ImagePicker();
     
     // Show options dialog
     showModalBottomSheet(
@@ -120,10 +121,13 @@ class _ProfileTabState extends State<ProfileTab> {
     setState(() => _isUploadingImage = false);
     
     if (success) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      final successColor = isDark ? AppColorsDark.success : AppColors.success;
+      
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Profile picture removed'),
-          backgroundColor: AppColors.success,
+        SnackBar(
+          content: const Text('Profile picture removed'),
+          backgroundColor: successColor,
         ),
       );
     }
@@ -131,16 +135,31 @@ class _ProfileTabState extends State<ProfileTab> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? AppColorsDark.background : AppColors.background;
+    final textPrimaryColor = isDark ? AppColorsDark.textPrimary : AppColors.textPrimary;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: const Text('Profile'),
-        backgroundColor: AppColors.background,
+        backgroundColor: bgColor,
         elevation: 0,
+        titleTextStyle: TextStyle(
+          color: textPrimaryColor,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       body: Consumer<AuthProvider>(
         builder: (context, auth, _) {
           final user = auth.user;
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final primaryColor = isDark ? AppColorsDark.primary : AppColors.primary;
+          final secondaryColor = isDark ? AppColorsDark.secondary : AppColors.secondary;
+          final textPrimaryColor = isDark ? AppColorsDark.textPrimary : AppColors.textPrimary;
+          final textSecondaryColor = isDark ? AppColorsDark.textSecondary : AppColors.textSecondary;
+          final cardDecoration = isDark ? AppDecorations.cardDecorationDark : AppDecorations.cardDecoration;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -150,7 +169,9 @@ class _ProfileTabState extends State<ProfileTab> {
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
-                  decoration: AppDecorations.cardDecoration,
+                  decoration: cardDecoration.copyWith(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   child: Column(
                     children: [
                       // Profile Picture with edit button
@@ -159,10 +180,10 @@ class _ProfileTabState extends State<ProfileTab> {
                           GestureDetector(
                             onTap: _pickAndUploadImage,
                             child: _isUploadingImage
-                                ? const CircleAvatar(
+                                ? CircleAvatar(
                                     radius: 50,
-                                    backgroundColor: AppColors.primary,
-                                    child: CircularProgressIndicator(
+                                    backgroundColor: primaryColor,
+                                    child: const CircularProgressIndicator(
                                       color: Colors.white,
                                       strokeWidth: 2,
                                     ),
@@ -176,7 +197,7 @@ class _ProfileTabState extends State<ProfileTab> {
                                       )
                                     : CircleAvatar(
                                         radius: 50,
-                                        backgroundColor: AppColors.primary,
+                                        backgroundColor: primaryColor,
                                         child: Text(
                                           (user?.name.isNotEmpty ?? false)
                                               ? user!.name[0].toUpperCase()
@@ -197,7 +218,7 @@ class _ProfileTabState extends State<ProfileTab> {
                               child: Container(
                                 padding: const EdgeInsets.all(6),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary,
+                                  color: secondaryColor,
                                   shape: BoxShape.circle,
                                   border: Border.all(color: Colors.white, width: 2),
                                 ),
@@ -214,12 +235,16 @@ class _ProfileTabState extends State<ProfileTab> {
                       const SizedBox(height: 16),
                       Text(
                         user?.name ?? 'User',
-                        style: AppTextStyles.heading2,
+                        style: AppTextStyles.heading2.copyWith(
+                          color: textPrimaryColor,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         user?.email ?? '',
-                        style: AppTextStyles.body2,
+                        style: AppTextStyles.body2.copyWith(
+                          color: textSecondaryColor,
+                        ),
                       ),
                     ],
                   ),
@@ -228,7 +253,9 @@ class _ProfileTabState extends State<ProfileTab> {
 
                 // Settings Section
                 Container(
-                  decoration: AppDecorations.cardDecoration,
+                  decoration: cardDecoration.copyWith(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Column(
                     children: [
                       _buildListTile(
@@ -236,6 +263,8 @@ class _ProfileTabState extends State<ProfileTab> {
                         title: 'Monthly Budget',
                         subtitle: '₹${user?.monthlyBudget.toStringAsFixed(0) ?? '0'}',
                         onTap: () => _showEditBudgetDialog(context),
+                        textColor: textPrimaryColor,
+                        subtitleColor: textSecondaryColor,
                       ),
                       const Divider(height: 1),
                       _buildListTile(
@@ -243,6 +272,8 @@ class _ProfileTabState extends State<ProfileTab> {
                         title: 'Savings Target',
                         subtitle: '${user?.savingsTarget.toStringAsFixed(0) ?? '0'}% of income',
                         onTap: () => _showEditSavingsTargetDialog(context),
+                        textColor: textPrimaryColor,
+                        subtitleColor: textSecondaryColor,
                       ),
                       const Divider(height: 1),
                       _buildListTile(
@@ -254,6 +285,8 @@ class _ProfileTabState extends State<ProfileTab> {
                             MaterialPageRoute(builder: (_) => const AddIncomeScreen()),
                           );
                         },
+                        textColor: textPrimaryColor,
+                        subtitleColor: textSecondaryColor,
                       ),
                       const Divider(height: 1),
                       _buildListTile(
@@ -261,6 +294,60 @@ class _ProfileTabState extends State<ProfileTab> {
                         title: 'Edit Profile',
                         subtitle: 'Update your name',
                         onTap: () => _showEditNameDialog(context),
+                        textColor: textPrimaryColor,
+                        subtitleColor: textSecondaryColor,
+                      ),
+                      const Divider(height: 1),
+                      _buildListTile(
+                        icon: Icons.switch_account,
+                        title: 'Switch to Splitwise',
+                        subtitle: 'Manage group expenses',
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Switch Feature'),
+                              content: const Text('Switch to Group Expenses (Splitwise)?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(builder: (_) => const FeatureSelectionScreen()),
+                                    );
+                                  },
+                                  child: const Text('Switch'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        textColor: textPrimaryColor,
+                        subtitleColor: textSecondaryColor,
+                      ),
+                      const Divider(height: 1),
+                      Consumer<ThemeProvider>(
+                        builder: (context, themeProvider, _) {
+                          String themeName = 'System';
+                          if (themeProvider.themeMode == ThemeMode.light) {
+                            themeName = 'Light';
+                          } else if (themeProvider.themeMode == ThemeMode.dark) {
+                            themeName = 'Dark';
+                          }
+                          
+                          return _buildListTile(
+                            icon: Icons.brightness_4_outlined,
+                            title: 'Theme',
+                            subtitle: '$themeName theme',
+                            onTap: () => _showThemePickerDialog(context, themeProvider),
+                            textColor: textPrimaryColor,
+                            subtitleColor: textSecondaryColor,
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -275,45 +362,57 @@ class _ProfileTabState extends State<ProfileTab> {
                     icon: const Icon(Icons.logout, color: Colors.white),
                     label: const Text(
                       'Logout',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.error,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                      elevation: 0,
                     ),
                   ),
                 ),
-                const SizedBox(height: 80), // Space for FAB
+                const SizedBox(height: 80), // Space for navigation bar
               ],
             ),
           );
         },
       ),
     );
-  }
-
-  Widget _buildListTile({
+  }  Widget _buildListTile({
     required IconData icon,
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    Color? textColor,
+    Color? subtitleColor,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = isDark ? AppColorsDark.primary : AppColors.primary;
+    final textColorFinal = textColor ?? (isDark ? AppColorsDark.textPrimary : AppColors.textPrimary);
+    final subtitleColorFinal = subtitleColor ?? (isDark ? AppColorsDark.textSecondary : AppColors.textSecondary);
+
     return ListTile(
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
+          color: primaryColor.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(icon, color: AppColors.primary),
+        child: Icon(icon, color: primaryColor, size: 22),
       ),
-      title: Text(title, style: AppTextStyles.body1),
-      subtitle: Text(subtitle, style: AppTextStyles.caption),
-      trailing: const Icon(Icons.chevron_right),
+      title: Text(title, style: AppTextStyles.body1.copyWith(
+        fontWeight: FontWeight.w600,
+        color: textColorFinal,
+      )),
+      subtitle: Text(subtitle, style: AppTextStyles.caption.copyWith(
+        color: subtitleColorFinal,
+      )),
+      trailing: Icon(Icons.chevron_right, color: subtitleColorFinal, size: 20),
       onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     );
   }
 
@@ -328,20 +427,32 @@ class _ProfileTabState extends State<ProfileTab> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Edit Monthly Budget'),
+        title: const Text('Edit Monthly Budget', style: TextStyle(
+          color: AppColors.textPrimary,
+          fontWeight: FontWeight.w700,
+        )),
         content: TextField(
           controller: controller,
           keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Monthly Budget',
             prefixText: '₹ ',
-            border: OutlineInputBorder(),
+            filled: true,
+            fillColor: const Color(0xFFFDFCFB),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.grey.shade200),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
+            ),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -352,7 +463,13 @@ class _ProfileTabState extends State<ProfileTab> {
                 Navigator.pop(context);
               }
             },
-            child: const Text('Save'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text('Save', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -511,6 +628,53 @@ class _ProfileTabState extends State<ProfileTab> {
             child: const Text('Logout', style: TextStyle(color: Colors.white)),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showThemePickerDialog(BuildContext context, ThemeProvider themeProvider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Choose Theme'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<ThemeMode>(
+              title: const Text('Light Theme'),
+              value: ThemeMode.light,
+              groupValue: themeProvider.themeMode,
+              onChanged: (ThemeMode? value) {
+                if (value != null) {
+                  themeProvider.setThemeMode(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              title: const Text('Dark Theme'),
+              value: ThemeMode.dark,
+              groupValue: themeProvider.themeMode,
+              onChanged: (ThemeMode? value) {
+                if (value != null) {
+                  themeProvider.setThemeMode(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              title: const Text('System Default'),
+              value: ThemeMode.system,
+              groupValue: themeProvider.themeMode,
+              onChanged: (ThemeMode? value) {
+                if (value != null) {
+                  themeProvider.setThemeMode(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

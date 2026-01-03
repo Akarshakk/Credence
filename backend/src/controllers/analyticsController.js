@@ -204,23 +204,24 @@ exports.getBalanceChart = async (req, res) => {
     ]);
     
     const uniqueDaysCount = uniqueDates.length;
+    const REQUIRED_DAYS = 2; // Reduced from 7 for easier testing
     
     if (uniqueDaysCount === 0) {
       return res.status(200).json({
         success: true,
         message: 'No expenses found. Start adding expenses to see the balance chart.',
         hasEnoughData: false,
-        daysRemaining: 7,
+        daysRemaining: REQUIRED_DAYS,
         data: { chartData: [] }
       });
     }
 
-    if (uniqueDaysCount < 7) {
+    if (uniqueDaysCount < REQUIRED_DAYS) {
       return res.status(200).json({
         success: true,
-        message: `Balance chart will be available after ${7 - uniqueDaysCount} more days of entries.`,
+        message: `Balance chart will be available after ${REQUIRED_DAYS - uniqueDaysCount} more day(s) of entries.`,
         hasEnoughData: false,
-        daysRemaining: 7 - uniqueDaysCount,
+        daysRemaining: REQUIRED_DAYS - uniqueDaysCount,
         data: { chartData: [] }
       });
     }

@@ -68,13 +68,17 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppColors.primary, AppColors.primaryDark],
+            colors: isDark 
+              ? [AppColorsDark.primary, AppColorsDark.primaryDark]
+              : [AppColors.primary, AppColors.primaryDark],
           ),
         ),
         child: Center(
@@ -92,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         width: 120,
                         height: 120,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: const Color(0xFFFDFCFB),
                           borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             BoxShadow(

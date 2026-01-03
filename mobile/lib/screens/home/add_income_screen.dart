@@ -73,12 +73,21 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? AppColorsDark.background : AppColors.background;
+    final textPrimaryColor = isDark ? AppColorsDark.textPrimary : AppColors.textPrimary;
+    
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: const Text('Add Income'),
-        backgroundColor: AppColors.background,
+        backgroundColor: bgColor,
         elevation: 0,
+        titleTextStyle: TextStyle(
+          color: textPrimaryColor,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -92,9 +101,9 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [AppColors.income, Color(0xFF2E7D32)],
+                    colors: [AppColors.income, AppColors.success],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [

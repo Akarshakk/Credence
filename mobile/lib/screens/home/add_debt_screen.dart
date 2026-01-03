@@ -83,10 +83,18 @@ class _AddDebtScreenState extends State<AddDebtScreen> {
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            _selectedType == DebtType.theyOweMe
-                ? '✅ Reminder set! You\'ll be notified on ${_formatDate(_selectedDueDate)}'
-                : '✅ Reminder set! Don\'t forget to pay on ${_formatDate(_selectedDueDate)}',
+          content: Row(
+            children: [
+              const Icon(Icons.done_all, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _selectedType == DebtType.theyOweMe
+                      ? 'Reminder set! You\'ll be notified on ${_formatDate(_selectedDueDate)}'
+                      : 'Reminder set! Don\'t forget to pay on ${_formatDate(_selectedDueDate)}',
+                ),
+              ),
+            ],
           ),
           backgroundColor: AppColors.success,
           duration: const Duration(seconds: 3),
@@ -119,6 +127,11 @@ class _AddDebtScreenState extends State<AddDebtScreen> {
         title: const Text('Add Debt'),
         backgroundColor: AppColors.background,
         elevation: 0,
+        titleTextStyle: const TextStyle(
+          color: AppColors.textPrimary,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -143,20 +156,20 @@ class _AddDebtScreenState extends State<AddDebtScreen> {
                   Expanded(
                     child: _buildTypeCard(
                       type: DebtType.theyOweMe,
-                      icon: '💰',
+                      icon: Icons.arrow_outward,
                       title: 'They Owe Me',
                       subtitle: 'Someone owes you money',
-                      color: Colors.green,
+                      color: AppColors.primary,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: _buildTypeCard(
                       type: DebtType.iOwe,
-                      icon: '💸',
+                      icon: Icons.credit_card,
                       title: 'I Owe',
                       subtitle: 'You owe someone money',
-                      color: Colors.orange,
+                      color: AppColors.secondary,
                     ),
                   ),
                 ],
@@ -413,7 +426,7 @@ class _AddDebtScreenState extends State<AddDebtScreen> {
 
   Widget _buildTypeCard({
     required DebtType type,
-    required String icon,
+    required IconData icon,
     required String title,
     required String subtitle,
     required Color color,
@@ -446,7 +459,7 @@ class _AddDebtScreenState extends State<AddDebtScreen> {
         ),
         child: Column(
           children: [
-            Text(icon, style: const TextStyle(fontSize: 40)),
+            Icon(icon, size: 40, color: isSelected ? color : AppColors.textPrimary),
             const SizedBox(height: 8),
             Text(
               title,

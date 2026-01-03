@@ -51,15 +51,26 @@ class _ExpensesTabState extends State<ExpensesTab> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? AppColorsDark.background : AppColors.background;
+    final textPrimaryColor = isDark ? const Color.fromARGB(255, 234, 237, 243) : AppColors.textPrimary;
+    final primaryColor = isDark ? AppColorsDark.primary : AppColors.primary;
+    final primaryLightColor = isDark ? AppColorsDark.primaryLight : AppColors.primaryLight;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: const Text('Expenses'),
-        backgroundColor: AppColors.background,
+        backgroundColor: bgColor,
         elevation: 0,
+        titleTextStyle: TextStyle(
+          color: textPrimaryColor,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: Icon(Icons.filter_list, color: textPrimaryColor),
             onPressed: _showFilterBottomSheet,
           ),
         ],
@@ -69,31 +80,40 @@ class _ExpensesTabState extends State<ExpensesTab> {
           // Filter chips
           if (_selectedCategory != null || _dateRange != null)
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Wrap(
                 spacing: 8,
+                runSpacing: 8,
                 children: [
                   if (_selectedCategory != null)
                     Chip(
                       label: Text(
                         Category.getByName(_selectedCategory!).displayName,
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
                       ),
                       deleteIcon: const Icon(Icons.close, size: 18),
                       onDeleted: () {
                         setState(() => _selectedCategory = null);
                         _loadExpenses();
                       },
+                      backgroundColor: primaryLightColor.withOpacity(0.2),
+                      labelStyle: TextStyle(color: primaryColor),
+                      deleteIconColor: primaryColor,
                     ),
                   if (_dateRange != null)
                     Chip(
                       label: Text(
                         '${DateFormat('MMM d').format(_dateRange!.start)} - ${DateFormat('MMM d').format(_dateRange!.end)}',
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
                       ),
                       deleteIcon: const Icon(Icons.close, size: 18),
                       onDeleted: () {
                         setState(() => _dateRange = null);
                         _loadExpenses();
                       },
+                      backgroundColor: AppColors.secondaryLight.withOpacity(0.2),
+                      labelStyle: const TextStyle(color: AppColors.secondary),
+                      deleteIconColor: AppColors.secondary,
                     ),
                 ],
               ),
@@ -117,17 +137,17 @@ class _ExpensesTabState extends State<ExpensesTab> {
                         Icon(
                           Icons.receipt_long_outlined,
                           size: 80,
-                          color: AppColors.textSecondary.withOpacity(0.5),
+                          color: AppColors.primary.withOpacity(0.3),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           'No expenses found',
                           style: AppTextStyles.heading3.copyWith(
-                            color: AppColors.textSecondary,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
+                        const Text(
                           'Start tracking your expenses',
                           style: AppTextStyles.body2,
                         ),
@@ -156,28 +176,31 @@ class _ExpensesTabState extends State<ExpensesTab> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   _formatDate(date),
                                   style: AppTextStyles.body1.copyWith(
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w700,
+                                    color: textPrimaryColor,
                                   ),
                                 ),
                                 Text(
                                   '₹${NumberFormat('#,##,###').format(dayTotal)}',
                                   style: AppTextStyles.body2.copyWith(
                                     color: AppColors.expense,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           Container(
-                            decoration: AppDecorations.cardDecoration,
+                            decoration: AppDecorations.cardDecoration.copyWith(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             child: ListView.separated(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -305,7 +328,8 @@ class _ExpensesTabState extends State<ExpensesTab> {
                 children: Category.all.map((category) {
                   final isSelected = _selectedCategory == category.name;
                   return FilterChip(
-                    label: Text('${category.icon} ${category.displayName}'),
+                    avatar: Icon(category.icon, size: 18, color: isSelected ? category.color : AppColors.textSecondary),
+                    label: Text(category.displayName),
                     selected: isSelected,
                     onSelected: (selected) {
                       setState(() {

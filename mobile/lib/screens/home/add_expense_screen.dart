@@ -555,8 +555,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         } else {
           // Show snackbar for success messages
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Expense added successfully! ✅'),
+            SnackBar(
+              content: Row(
+                children: const [
+                  Icon(Icons.check_circle, color: Colors.white, size: 20),
+                  SizedBox(width: 8),
+                  Text('Expense added successfully!'),
+                ],
+              ),
               backgroundColor: AppColors.success,
             ),
           );
@@ -583,12 +589,21 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? AppColorsDark.background : AppColors.background;
+    final textPrimaryColor = isDark ? AppColorsDark.textPrimary : AppColors.textPrimary;
+    
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: const Text('Add Expense'),
-        backgroundColor: AppColors.background,
+        backgroundColor: bgColor,
         elevation: 0,
+        titleTextStyle: TextStyle(
+          color: textPrimaryColor,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       body: Stack(
         children: [
@@ -605,35 +620,35 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       colors: [
-                        Colors.purple.shade400,
-                        Colors.blue.shade400,
+                        AppColors.primary,
+                        AppColors.primaryLight,
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.purple.withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                        color: AppColors.primary.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
                   child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(
                           Icons.document_scanner,
                           color: Colors.white,
-                          size: 28,
+                          size: 26,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -647,6 +662,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
+                                letterSpacing: 0.3,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -682,35 +698,35 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       colors: [
-                        Colors.green.shade400,
-                        Colors.orange.shade400,
+                        AppColors.secondary,
+                        AppColors.secondaryLight,
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.green.withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                        color: AppColors.secondary.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
                   child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(
                           Icons.swap_horiz,
                           color: Colors.white,
-                          size: 28,
+                          size: 26,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -718,13 +734,20 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              '💰 Track Debt / IOU',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              children: const [
+                                Icon(Icons.attach_money, color: Colors.white, size: 20),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Track Debt / IOU',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 4),
                             Text(
@@ -938,9 +961,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
+                          Icon(
                             category.icon,
-                            style: const TextStyle(fontSize: 28),
+                            size: 28,
+                            color: isSelected ? category.color : AppColors.textSecondary,
                           ),
                           const SizedBox(height: 4),
                           Text(

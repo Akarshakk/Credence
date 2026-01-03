@@ -9,12 +9,16 @@ import '../../providers/analytics_provider.dart';
 import '../../providers/expense_provider.dart';
 import '../../providers/income_provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/splitwise_provider.dart';
 import '../widgets/expense_card.dart';
 import '../widgets/summary_card.dart';
 import 'add_income_screen.dart';
+import '../splitwise/splitwise_home_screen.dart';
 
 class DashboardTab extends StatefulWidget {
-  const DashboardTab({super.key});
+  final VoidCallback? onNavigateToProfile;
+
+  const DashboardTab({super.key, this.onNavigateToProfile});
 
   @override
   State<DashboardTab> createState() => _DashboardTabState();
@@ -28,7 +32,6 @@ class _DashboardTabState extends State<DashboardTab> {
   // Get weeks of a month
   List<Map<String, dynamic>> _getWeeksOfMonth(DateTime month) {
     final weeks = <Map<String, dynamic>>[];
-    final now = DateTime.now();
     
     // Add "Current Week" option
     weeks.add({
@@ -84,9 +87,15 @@ class _DashboardTabState extends State<DashboardTab> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AuthProvider>(context).user;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? AppColorsDark.background : const Color.fromARGB(255, 228, 228, 228);
+    final textPrimaryColor = isDark ? AppColorsDark.textPrimary : AppColors.textPrimary;
+    final textSecondaryColor = isDark ? AppColorsDark.textSecondary : AppColors.textSecondary;
+    final primaryColor = isDark ? AppColorsDark.primary : AppColors.primary;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: bgColor,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _refreshData,
@@ -95,6 +104,7 @@ class _DashboardTabState extends State<DashboardTab> {
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // Header
                 Row(
@@ -105,36 +115,42 @@ class _DashboardTabState extends State<DashboardTab> {
                       children: [
                         Text(
                           'Hello, ${user?.name.split(' ').first ?? 'User'} 👋',
-                          style: AppTextStyles.heading2,
+                          style: AppTextStyles.heading2.copyWith(color: textPrimaryColor),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           DateFormat('EEEE, d MMMM').format(DateTime.now()),
-                          style: AppTextStyles.body2,
+                          style: AppTextStyles.body2.copyWith(color: textSecondaryColor),
                         ),
                       ],
                     ),
-                    user?.profilePicture != null && user!.profilePicture!.isNotEmpty
-                        ? CircleAvatar(
-                            radius: 24,
-                            backgroundImage: MemoryImage(
-                              base64Decode(user.profilePicture!.split(',').last),
-                            ),
-                          )
-                        : CircleAvatar(
-                            radius: 24,
-                            backgroundColor: AppColors.primary,
-                            child: Text(
-                              (user?.name.isNotEmpty ?? false) 
-                                  ? user!.name[0].toUpperCase() 
-                                  : 'U',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                    GestureDetector(
+                      onTap: () {
+                        // Navigate to profile tab
+                        widget.onNavigateToProfile?.call();
+                      },
+                      child: user?.profilePicture != null && user!.profilePicture!.isNotEmpty
+                          ? CircleAvatar(
+                              radius: 24,
+                              backgroundImage: MemoryImage(
+                                base64Decode(user.profilePicture!.split(',').last),
+                              ),
+                            )
+                          : CircleAvatar(
+                              radius: 24,
+                              backgroundColor: primaryColor,
+                              child: Text(
+                                (user?.name.isNotEmpty ?? false) 
+                                    ? user!.name[0].toUpperCase() 
+                                    : 'U',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -251,6 +267,10 @@ class _DashboardTabState extends State<DashboardTab> {
                 _buildPieChartSection(),
                 const SizedBox(height: 24),
 
+                // Group Expenses Section
+                _buildGroupExpensesSection(),
+                const SizedBox(height: 24),
+
                 // 7-Day Balance Chart
                 _buildBalanceChartSection(),
                 const SizedBox(height: 24),
@@ -307,13 +327,13 @@ class _DashboardTabState extends State<DashboardTab> {
             decoration: AppDecorations.cardDecoration,
             child: Column(
               children: [
-                Icon(Icons.pie_chart_outline, size: 48, color: AppColors.textSecondary),
+                const Icon(Icons.pie_chart_outline, size: 48, color: AppColors.textSecondary),
                 const SizedBox(height: 12),
                 Text(
                   'No expenses yet',
                   style: AppTextStyles.body1.copyWith(color: AppColors.textSecondary),
                 ),
-                Text(
+                const Text(
                   'Add your first expense to see the breakdown',
                   style: AppTextStyles.caption,
                 ),
@@ -330,7 +350,7 @@ class _DashboardTabState extends State<DashboardTab> {
             children: [
               const Text('Expense Categories', style: AppTextStyles.heading3),
               const SizedBox(height: 8),
-              Text(
+              const Text(
                 'Monthly breakdown by category',
                 style: AppTextStyles.caption,
               ),
@@ -400,11 +420,17 @@ class _DashboardTabState extends State<DashboardTab> {
                           ),
                         ),
                         const SizedBox(width: 6),
-                        Text(
-                          '${category.icon} ${category.displayName}',
-                          style: AppTextStyles.caption.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
+                        Row(
+                          children: [
+                            Icon(category.icon, size: 14, color: category.color),
+                            const SizedBox(width: 4),
+                            Text(
+                              category.displayName,
+                              style: AppTextStyles.caption.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -439,7 +465,7 @@ class _DashboardTabState extends State<DashboardTab> {
             decoration: AppDecorations.cardDecoration,
             child: Column(
               children: [
-                Icon(Icons.show_chart, size: 48, color: AppColors.textSecondary),
+                const Icon(Icons.show_chart, size: 48, color: AppColors.textSecondary),
                 const SizedBox(height: 12),
                 Text(
                   '7-Day Balance Chart',
@@ -465,7 +491,7 @@ class _DashboardTabState extends State<DashboardTab> {
             decoration: AppDecorations.cardDecoration,
             child: Column(
               children: [
-                Icon(Icons.show_chart, size: 48, color: AppColors.textSecondary),
+                const Icon(Icons.show_chart, size: 48, color: AppColors.textSecondary),
                 const SizedBox(height: 12),
                 Text(
                   'Loading chart data...',
@@ -476,11 +502,14 @@ class _DashboardTabState extends State<DashboardTab> {
           );
         }
 
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: AppDecorations.cardDecoration,
-          child: Column(
+        return ClipRect(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: AppDecorations.cardDecoration,
+            clipBehavior: Clip.antiAlias,
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -497,20 +526,26 @@ class _DashboardTabState extends State<DashboardTab> {
                 style: AppTextStyles.caption,
               ),
               const SizedBox(height: 20),
-              SizedBox(
-                height: 220,
-                child: _buildLayeredAreaChart(chartData),
+              ClipRect(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 219),
+                  child: _buildLayeredAreaChart(chartData),
+                ),
               ),
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildChartLegendItem('Income', AppColors.income),
-                  const SizedBox(width: 24),
-                  _buildChartLegendItem('Expense', AppColors.expense),
-                ],
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildChartLegendItem('Income', AppColors.income),
+                    const SizedBox(width: 24),
+                    _buildChartLegendItem('Expense', AppColors.expense),
+                  ],
+                ),
               ),
             ],
+          ),
           ),
         );
       },
@@ -586,7 +621,7 @@ class _DashboardTabState extends State<DashboardTab> {
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
                     chartData[index].dayName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 11,
                       color: AppColors.textSecondary,
                       fontWeight: FontWeight.w500,
@@ -607,7 +642,7 @@ class _DashboardTabState extends State<DashboardTab> {
                   padding: const EdgeInsets.only(right: 8),
                   child: Text(
                     '₹${NumberFormat.compact().format(value)}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 10,
                       color: AppColors.textSecondary,
                     ),
@@ -717,7 +752,7 @@ class _DashboardTabState extends State<DashboardTab> {
         const SizedBox(width: 6),
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
             color: AppColors.textSecondary,
             fontWeight: FontWeight.w500,
@@ -736,23 +771,6 @@ class _DashboardTabState extends State<DashboardTab> {
     return max == 0 ? 1000 : max * 1.2;
   }
 
-  Widget _buildLegendItem(String label, Color color) {
-    return Row(
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(3),
-          ),
-        ),
-        const SizedBox(width: 6),
-        Text(label, style: AppTextStyles.caption),
-      ],
-    );
-  }
-
   Widget _buildLatestExpensesSection() {
     return Consumer<ExpenseProvider>(
       builder: (context, expenseProvider, _) {
@@ -761,8 +779,10 @@ class _DashboardTabState extends State<DashboardTab> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: AppDecorations.cardDecoration,
+          clipBehavior: Clip.antiAlias,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -777,13 +797,13 @@ class _DashboardTabState extends State<DashboardTab> {
                 ],
               ),
               if (expenses.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
                   child: Center(
                     child: Column(
                       children: [
                         Icon(Icons.receipt_long, size: 48, color: AppColors.textSecondary),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Text(
                           'No expenses yet',
                           style: AppTextStyles.body2,
@@ -793,14 +813,14 @@ class _DashboardTabState extends State<DashboardTab> {
                   ),
                 )
               else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: expenses.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    return ExpenseCard(expense: expenses[index]);
-                  },
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (int i = 0; i < expenses.length; i++) ...[
+                      ExpenseCard(expense: expenses[i]),
+                      if (i < expenses.length - 1) const Divider(height: 1),
+                    ],
+                  ],
                 ),
             ],
           ),
@@ -810,7 +830,6 @@ class _DashboardTabState extends State<DashboardTab> {
   }
 
   Widget _buildWeekSelector(AnalyticsProvider analytics) {
-    final weeks = _getWeeksOfMonth(_selectedMonth);
     
     return GestureDetector(
       onTap: () => _showWeekPickerDialog(analytics),
@@ -824,20 +843,20 @@ class _DashboardTabState extends State<DashboardTab> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.calendar_today, size: 14, color: AppColors.primary),
+            const Icon(Icons.calendar_today, size: 14, color: AppColors.primary),
             const SizedBox(width: 6),
             Text(
               _selectedWeekOfMonth == 0 
                   ? 'Current' 
                   : 'Week $_selectedWeekOfMonth',
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.primary,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(width: 4),
-            Icon(Icons.arrow_drop_down, size: 18, color: AppColors.primary),
+            const Icon(Icons.arrow_drop_down, size: 18, color: AppColors.primary),
           ],
         ),
       ),
@@ -850,7 +869,7 @@ class _DashboardTabState extends State<DashboardTab> {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: Color.fromARGB(255, 202, 215, 212),
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(
@@ -862,14 +881,14 @@ class _DashboardTabState extends State<DashboardTab> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
             const SizedBox(height: 16),
             
             // Title
-            Text(
+            const Text(
               'Select Week',
               style: AppTextStyles.heading3,
             ),
@@ -902,7 +921,7 @@ class _DashboardTabState extends State<DashboardTab> {
                     ),
                     child: Text(
                       DateFormat('MMMM yyyy').format(_selectedMonth),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -960,7 +979,7 @@ class _DashboardTabState extends State<DashboardTab> {
                         child: Text(
                           week['weekNum'] == 0 ? '⟳' : '${week['weekNum']}',
                           style: TextStyle(
-                            color: isSelected ? Colors.white : AppColors.primary,
+                            color: isSelected ? AppColors.textPrimary : AppColors.primary,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -971,11 +990,11 @@ class _DashboardTabState extends State<DashboardTab> {
                       week['label'],
                       style: TextStyle(
                         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                        color: isSelected ? AppColors.primary : null,
+                        color: isSelected ? AppColors.primary : AppColors.textPrimary,
                       ),
                     ),
                     trailing: isSelected 
-                        ? Icon(Icons.check_circle, color: AppColors.primary)
+                        ? const Icon(Icons.check_circle, color: AppColors.primary)
                         : null,
                   );
                 },
@@ -985,6 +1004,242 @@ class _DashboardTabState extends State<DashboardTab> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildGroupExpensesSection() {
+    return Consumer2<SplitWiseProvider, AuthProvider>(
+      builder: (context, splitwiseProvider, authProvider, _) {
+        final groups = splitwiseProvider.groups;
+        final userId = authProvider.user?.id ?? '';
+
+        if (groups.isEmpty) {
+          return Container(
+            padding: const EdgeInsets.all(24),
+            decoration: AppDecorations.cardDecoration,
+            child: Column(
+              children: [
+                const Icon(Icons.groups_outlined, size: 48, color: AppColors.textSecondary),
+                const SizedBox(height: 12),
+                Text(
+                  'No Group Expenses',
+                  style: AppTextStyles.body1.copyWith(color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Create or join a group to split expenses with friends',
+                  style: AppTextStyles.caption,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => const SplitwiseHomeScreen()),
+                    );
+                  },
+                  icon: const Icon(Icons.add),
+                  label: const Text('Go to Groups'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // Calculate total spent by user across all groups
+        double totalSpent = 0;
+        for (var group in groups) {
+          final userExpenses = group.expenses.where((e) => e.paidBy == userId);
+          totalSpent += userExpenses.fold(0.0, (sum, e) => sum + e.amount);
+        }
+
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: AppDecorations.cardDecoration,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Group Expenses', style: AppTextStyles.heading3),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => const SplitwiseHomeScreen()),
+                      );
+                    },
+                    child: const Text('View All'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Your spending in group expenses',
+                style: AppTextStyles.caption,
+              ),
+              const SizedBox(height: 16),
+
+              // Summary cards
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.payment, color: AppColors.primary, size: 20),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Total Spent',
+                            style: AppTextStyles.caption,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '₹${NumberFormat('#,##,###').format(totalSpent)}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.secondary.withOpacity(0.3)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.groups, color: AppColors.secondary, size: 20),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Active Groups',
+                            style: AppTextStyles.caption,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${groups.length}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Group breakdown
+              if (groups.isNotEmpty) ...[
+                Text(
+                  'Recent Groups',
+                  style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 12),
+                ...groups.take(3).map((group) {
+                  final userExpenses = group.expenses.where((e) => e.paidBy == userId);
+                  final groupTotal = userExpenses.fold(0.0, (sum, e) => sum + e.amount);
+                  final userMember = group.members.firstWhere(
+                    (m) => m.userId == userId,
+                    orElse: () => group.members.first,
+                  );
+                  final balance = userMember.balance;
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.group,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                group.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textPrimary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${group.members.length} members • ${group.expenses.length} expenses',
+                                style: AppTextStyles.caption,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '₹${groupTotal.toStringAsFixed(0)}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            Text(
+                              balance >= 0 ? 'Gets ₹${balance.abs().toStringAsFixed(0)}' : 'Owes ₹${balance.abs().toStringAsFixed(0)}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: balance >= 0 ? Colors.green : Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

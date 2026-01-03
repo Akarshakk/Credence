@@ -39,11 +39,17 @@ class _DebtListScreenState extends State<DebtListScreen>
         title: const Text('Debts & IOUs'),
         backgroundColor: AppColors.background,
         elevation: 0,
+        titleTextStyle: const TextStyle(
+          color: AppColors.textPrimary,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
         bottom: TabBar(
           controller: _tabController,
           labelColor: AppColors.primary,
           unselectedLabelColor: AppColors.textSecondary,
           indicatorColor: AppColors.primary,
+          indicatorWeight: 3,
           tabs: const [
             Tab(text: 'All'),
             Tab(text: 'They Owe Me'),
@@ -69,7 +75,7 @@ class _DebtListScreenState extends State<DebtListScreen>
                         child: _buildSummaryCard(
                           title: 'To Receive',
                           amount: provider.summary!.theyOweMe,
-                          color: Colors.green,
+                          color: AppColors.primary,
                           icon: '💰',
                         ),
                       ),
@@ -78,7 +84,7 @@ class _DebtListScreenState extends State<DebtListScreen>
                         child: _buildSummaryCard(
                           title: 'To Pay',
                           amount: provider.summary!.iOwe,
-                          color: Colors.orange,
+                          color: AppColors.secondary,
                           icon: '💸',
                         ),
                       ),
