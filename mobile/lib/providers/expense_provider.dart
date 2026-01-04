@@ -89,6 +89,8 @@ class ExpenseProvider extends ChangeNotifier {
     String? description,
     String? merchant,
     DateTime? date,
+    String? groupExpenseId,
+    String? groupId,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -103,6 +105,8 @@ class ExpenseProvider extends ChangeNotifier {
           'description': description ?? '',
           'merchant': merchant ?? '',
           'date': (date ?? DateTime.now()).toIso8601String(),
+          if (groupExpenseId != null) 'groupExpenseId': groupExpenseId,
+          if (groupId != null) 'groupId': groupId,
         },
       );
 
@@ -173,12 +177,39 @@ class ExpenseProvider extends ChangeNotifier {
       final response = await ApiService.delete('${ApiConstants.expenses}/$id');
 
       if (response['success'] == true) {
+        // Remove from local lists immediately for UI responsiveness
         _expenses.removeWhere((e) => e.id == id);
         _latestExpenses.removeWhere((e) => e.id == id);
         notifyListeners();
+        
+        // Refresh all data to update dashboard charts and balances
+        await fetchExpenses();
+        await fetchLatestExpenses();
         return true;
       } else {
         _errorMessage = response['message'] ?? 'Failed to delete expense';
+        return false;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
+    }
+  }
+
+  // Delete expense by group link (for when group expense is deleted)
+  Future<bool> deleteExpenseByGroupLink(String groupId, String groupExpenseId) async {
+    try {
+      final response = await ApiService.delete(
+        '${ApiConstants.expenses}/by-group/$groupId/$groupExpenseId'
+      );
+
+      if (response['success'] == true) {
+        // Refresh all data to update UI
+        await fetchExpenses();
+        await fetchLatestExpenses();
+        return true;
+      } else {
+        _errorMessage = response['message'] ?? 'Failed to delete linked expense';
         return false;
       }
     } catch (e) {

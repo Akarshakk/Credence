@@ -55,6 +55,16 @@ const expenseSchema = new mongoose.Schema({
     required: true,
     default: Date.now
   },
+  groupExpenseId: {
+    type: String,
+    required: false,
+    default: null
+  },
+  groupId: {
+    type: String,
+    required: false,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -67,7 +77,7 @@ expenseSchema.index({ user: 1, category: 1 });
 expenseSchema.index({ user: 1, date: 1, category: 1 });
 
 // Export categories for use in other files
-expenseSchema.statics.getCategories = function() {
+expenseSchema.statics.getCategories = function () {
   return EXPENSE_CATEGORIES;
 };
 

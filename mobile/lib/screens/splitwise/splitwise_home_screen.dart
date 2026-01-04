@@ -52,7 +52,7 @@ class _SplitwiseHomeScreenState extends State<SplitwiseHomeScreen> {
         backgroundColor: surfaceColor,
         elevation: 0,
         title: Text(
-          'Splitwise',
+          'SmartSplit',
           style: AppTextStyles.heading2.copyWith(color: textPrimaryColor),
         ),
         centerTitle: false,

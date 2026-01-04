@@ -119,6 +119,38 @@ class _ExpensesTabState extends State<ExpensesTab> {
               ),
             ),
 
+          // Swipe hint
+          Consumer<ExpenseProvider>(
+            builder: (context, provider, _) {
+              if (provider.expenses.isEmpty) return const SizedBox.shrink();
+              
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: primaryLightColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: primaryColor.withOpacity(0.2)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.swipe_left, size: 16, color: primaryColor),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Swipe left to delete an expense',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+
           // Expenses list
           Expanded(
             child: Consumer<ExpenseProvider>(

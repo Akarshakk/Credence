@@ -109,6 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextFormField(
                       controller: _nameController,
                       textCapitalization: TextCapitalization.words,
+                      style: const TextStyle(color: Colors.black87, fontSize: 15),
                       decoration: InputDecoration(
                         hintText: 'Your full name',
                         prefixIcon: const Icon(Icons.person_outlined, size: 20),
@@ -148,6 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
+                      style: const TextStyle(color: Colors.black87, fontSize: 15),
                   decoration: InputDecoration(
                         hintText: 'your@email.com',
                         prefixIcon: const Icon(Icons.mail_outlined, size: 20),
@@ -190,6 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
+                      style: const TextStyle(color: Colors.black87, fontSize: 15),
                       decoration: InputDecoration(
                         hintText: 'Min. 6 characters',
                         prefixIcon: const Icon(Icons.lock_outlined, size: 20),
@@ -241,6 +244,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextFormField(
                       controller: _confirmPasswordController,
                       obscureText: _obscureConfirmPassword,
+                      style: const TextStyle(color: Colors.black87, fontSize: 15),
                       decoration: InputDecoration(
                         hintText: 'Confirm password',
                         prefixIcon: const Icon(Icons.lock_outlined, size: 20),
@@ -289,6 +293,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextFormField(
                       controller: _budgetController,
                       keyboardType: TextInputType.number,
+                      style: const TextStyle(color: Colors.black87, fontSize: 15),
                       decoration: InputDecoration(
                         hintText: 'Enter your monthly income/budget',
                         prefixIcon: const Icon(Icons.account_balance_wallet_outlined, size: 20),

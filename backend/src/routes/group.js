@@ -7,7 +7,11 @@ const {
     joinGroup,
     addMember,
     deleteGroup,
-    addExpense
+    leaveGroup,
+    transferOwnership,
+    settleUp,
+    addExpense,
+    deleteGroupExpense
 } = require('../controllers/groupController');
 const { protect } = require('../middleware/auth');
 
@@ -20,9 +24,13 @@ router.get('/', getGroups);
 router.post('/join', joinGroup);
 router.get('/:id', getGroupById);
 router.post('/:id/members', addMember);
+router.post('/:id/transfer', transferOwnership);
+router.post('/:id/settle', settleUp);
+router.post('/:id/leave', leaveGroup);
 router.delete('/:id', deleteGroup);
 
 // Expense routes
 router.post('/:id/expenses', addExpense);
+router.delete('/:id/expenses/:expenseId', deleteGroupExpense);
 
 module.exports = router;

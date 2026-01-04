@@ -443,34 +443,54 @@ class _AddGroupExpenseScreenState extends State<AddGroupExpenseScreen> {
                             splits: splits,
                           );
 
-                          // If current user paid, also add to personal expenses
-                          if (success && selectedPayerId == authProvider.user?.id) {
-                            final expenseProvider =
-                                Provider.of<ExpenseProvider>(context, listen: false);
-                            
-                            // Calculate user's share (net amount they actually owe)
-                            final userSplit = splits.firstWhere(
-                              (s) => s.memberId == selectedPayerId,
-                              orElse: () => splits.first,
-                            );
-                            final netAmount = userSplit.amount;
-                            
-                            // Map category from group to personal expense category
-                            String personalCategory = selectedCategory;
-                            if (selectedCategory == 'restaurant' || selectedCategory == 'local_bar') {
-                              personalCategory = 'food';
-                            } else if (selectedCategory == 'school') {
-                              personalCategory = 'education';
+                          // Get the created group expense ID so we can link it
+                          String? groupExpenseId;
+                          if (success && provider.currentGroup!= null) {
+                            final updatedGroup = provider.currentGroup!;
+                            if (updatedGroup.expenses.isNotEmpty) {
+                              groupExpenseId = updatedGroup.expenses.last.id;
                             }
-                            
-                            await expenseProvider.addExpense(
-                              amount: netAmount, // Use net amount, not total
-                              category: personalCategory,
-                              description: descriptionController.text.isEmpty
-                                  ? 'Group Expense - ${group.name}'
-                                  : descriptionController.text,
-                              date: DateTime.now(),
-                            );
+                          }
+
+                          // Always add user's share to personal expenses with group link
+                          if (success && groupExpenseId != null) {
+                            final authUserId = authProvider.user?.id;
+                            if (authUserId != null) {
+                              final expenseProvider =
+                                  Provider.of<ExpenseProvider>(context, listen: false);
+                              
+                              // Calculate user's share
+                              final userSplit = splits.firstWhere(
+                                (s) => s.memberId == authUserId,
+                                orElse: () => GroupExpenseSplit(
+                                  memberId: authUserId,
+                                  memberName: authProvider.user?.name ?? '',
+                                  amount: 0,
+                                ),
+                              );
+                              
+                              // Only add if user has a share in this expense
+                              if (userSplit.amount > 0) {
+                                // Map category from group to personal expense category
+                                String personalCategory = selectedCategory;
+                                if (selectedCategory == 'restaurant' || selectedCategory == 'local_bar') {
+                                  personalCategory = 'food';
+                                } else if (selectedCategory == 'school') {
+                                  personalCategory = 'education';
+                                }
+                                
+                                await expenseProvider.addExpense(
+                                  amount: userSplit.amount, // User's share
+                                  category: personalCategory,
+                                  description: descriptionController.text.isEmpty
+                                      ? 'Group Expense - ${group.name}'
+                                      : descriptionController.text,
+                                  date: DateTime.now(),
+                                  groupExpenseId: groupExpenseId,  // LINK TO GROUP
+                                  groupId: widget.groupId,          // LINK TO GROUP
+                                );
+                              }
+                            }
                           }
 
                           if (success && mounted) {

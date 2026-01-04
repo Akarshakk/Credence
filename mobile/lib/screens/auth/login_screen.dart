@@ -119,27 +119,29 @@ class _LoginScreenState extends State<LoginScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Email', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+                            const Text('Email', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87)),
                             const SizedBox(height: 8),
                             TextFormField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              style: const TextStyle(color: Colors.black87, fontSize: 15),
                               decoration: InputDecoration(
                                 hintText: 'your@email.com',
-                                prefixIcon: const Icon(Icons.mail_outlined, size: 20),
+                                prefixIcon: const Icon(Icons.mail_outlined, size: 20, color: Colors.black54),
                                 filled: true,
                                 fillColor: const Color(0xFFFDFCFB),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.grey.shade200),
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.grey.shade200),
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                                  borderSide: const BorderSide(color: Colors.black87, width: 2),
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                               ),
@@ -161,18 +163,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Password', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+                            const Text('Password', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87)),
                             const SizedBox(height: 8),
                             TextFormField(
                               controller: _passwordController,
                               obscureText: _obscurePassword,
+                              textInputAction: TextInputAction.done,
+                              onFieldSubmitted: (_) => _login(),
+                              style: const TextStyle(color: Colors.black87, fontSize: 15),
                               decoration: InputDecoration(
                                 hintText: 'Enter your password',
-                                prefixIcon: const Icon(Icons.lock_outlined, size: 20),
+                                prefixIcon: const Icon(Icons.lock_outlined, size: 20, color: Colors.black54),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                                     size: 20,
+                                    color: Colors.black54,
                                   ),
                                   onPressed: () {
                                     setState(() => _obscurePassword = !_obscurePassword);
@@ -182,15 +188,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fillColor: const Color(0xFFFDFCFB),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.grey.shade200),
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.grey.shade200),
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                                  borderSide: const BorderSide(color: Colors.black87, width: 2),
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                               ),

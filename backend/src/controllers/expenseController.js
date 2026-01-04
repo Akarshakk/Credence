@@ -4,19 +4,19 @@ const { EXPENSE_CATEGORIES } = require('../models/Expense');
 // Helper function to parse date without timezone issues
 const parseDate = (dateString) => {
   if (!dateString) return new Date();
-  
+
   // If it's already a Date object
   if (dateString instanceof Date) return dateString;
-  
+
   // Parse the date string and create a date in local timezone
   const parsed = new Date(dateString);
-  
+
   // If the parsed date is valid, use it
   if (!isNaN(parsed.getTime())) {
     // Create a new date using the date components to avoid timezone shift
     return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate(), 12, 0, 0);
   }
-  
+
   return new Date();
 };
 
@@ -26,7 +26,7 @@ const parseDate = (dateString) => {
 exports.checkDuplicate = async (req, res) => {
   try {
     const { amount, category, date, merchant } = req.body;
-    
+
     const targetDate = parseDate(date);
     const startOfDay = new Date(targetDate);
     startOfDay.setHours(0, 0, 0, 0);
@@ -80,7 +80,7 @@ exports.checkDuplicate = async (req, res) => {
 // @access  Private
 exports.addExpense = async (req, res) => {
   try {
-    const { amount, category, description, merchant, date } = req.body;
+    const { amount, category, description, merchant, date, groupExpenseId, groupId } = req.body;
 
     const expense = await Expense.create({
       user: req.user.id,
@@ -88,7 +88,9 @@ exports.addExpense = async (req, res) => {
       category: category.toLowerCase(),
       description: description || '',
       merchant: merchant || '',
-      date: parseDate(date)
+      date: parseDate(date),
+      groupExpenseId: groupExpenseId || null,
+      groupId: groupId || null
     });
 
     res.status(201).json({
@@ -302,6 +304,33 @@ exports.deleteExpense = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error deleting expense',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Delete expense by group link
+// @route   DELETE /api/expenses/by-group/:groupId/:groupExpenseId
+// @access  Private
+exports.deleteExpenseByGroupLink = async (req, res) => {
+  try {
+    const { groupId, groupExpenseId } = req.params;
+
+    const result = await Expense.deleteMany({
+      user: req.user.id,
+      groupId: groupId,
+      groupExpenseId: groupExpenseId
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Deleted ${result.deletedCount} linked expense(s)`,
+      data: { deletedCount: result.deletedCount }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting linked expense',
       error: error.message
     });
   }

@@ -11,6 +11,7 @@ const {
   getExpense,
   updateExpense,
   deleteExpense,
+  deleteExpenseByGroupLink,
   checkDuplicate
 } = require('../controllers/expenseController');
 
@@ -40,6 +41,9 @@ router.get('/latest', getLatestExpenses);
 
 // Check for duplicate expenses
 router.post('/check-duplicate', checkDuplicate);
+
+// Delete by group link
+router.delete('/by-group/:groupId/:groupExpenseId', deleteExpenseByGroupLink);
 
 router.route('/:id')
   .get(getExpense)

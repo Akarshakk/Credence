@@ -89,7 +89,7 @@ class GroupExpense {
 
   factory GroupExpense.fromJson(Map<String, dynamic> json) {
     return GroupExpense(
-      id: json['id'] ?? '',
+      id: json['_id'] ?? json['id'] ?? '',  // MongoDB uses _id
       groupId: json['groupId'] ?? '',
       paidBy: json['paidBy'] ?? '',
       paidByName: json['paidByName'] ?? '',
@@ -143,7 +143,7 @@ class Group {
 
   factory Group.fromJson(Map<String, dynamic> json) {
     return Group(
-      id: json['id'] ?? '',
+      id: json['_id'] ?? json['id'] ?? '',  // MongoDB uses _id
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       members: (json['members'] as List<dynamic>?)

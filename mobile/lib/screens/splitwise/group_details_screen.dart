@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../models/group.dart';
@@ -69,6 +70,170 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
               IconButton(
                 onPressed: () => _showShareDialog(group.inviteCode, group.name),
                 icon: const Icon(Icons.share),
+              ),
+              PopupMenuButton(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: const Row(
+                      children: [
+                        Icon(Icons.exit_to_app, size: 20),
+                        SizedBox(width: 8),
+                        Text('Leave Group'),
+                      ],
+                    ),
+                    onTap: () {
+                      Future.delayed(Duration.zero, () async {
+                        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                        final isCreator = group.createdBy == authProvider.user?.id;
+                        final hasOtherMembers = group.members.length > 1;
+
+                        // If creator with other members, show transfer ownership dialog
+                        if (isCreator && hasOtherMembers) {
+                          String? selectedMemberId;
+                          
+                          await showDialog(
+                            context: context,
+                            builder: (context) => StatefulBuilder(
+                              builder: (context, setState) => AlertDialog(
+                                title: const Text('Transfer Ownership'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'As the group creator, you must transfer ownership before leaving.',
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    const Text('Select new owner:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    const SizedBox(height: 8),
+                                    ...group.members
+                                        .where((m) => m.userId != authProvider.user?.id)
+                                        .map((member) => RadioListTile<String>(
+                                              title: Text(member.name),
+                                              subtitle: Text(member.email),
+                                              value: member.userId,
+                                              groupValue: selectedMemberId,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedMemberId = value;
+                                                });
+                                              },
+                                            )),
+                                  ],
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: selectedMemberId == null
+                                        ? null
+                                        : () async {
+                                            final success = await provider.transferOwnership(
+                                              group.id,
+                                              selectedMemberId!,
+                                            );
+                                            if (context.mounted) {
+                                              if (success) {
+                                                Navigator.pop(context); // Close transfer dialog
+                                                // Now show leave dialog
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) => AlertDialog(
+                                                    title: const Text('Leave Group?'),
+                                                    content: const Text(
+                                                      'Ownership transferred. Do you want to leave the group now?',
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () => Navigator.pop(context),
+                                                        child: const Text('Stay'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          final leaveSuccess =
+                                                              await provider.leaveGroup(group.id);
+                                                          if (context.mounted) {
+                                                            Navigator.pop(context); // Close dialog
+                                                            if (leaveSuccess) {
+                                                              Navigator.pop(context); // Go back
+                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                const SnackBar(
+                                                                  content: Text('You have left the group'),
+                                                                ),
+                                                              );
+                                                            }
+                                                          }
+                                                        },
+                                                        child: const Text('Leave'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(provider.errorMessage ??
+                                                        'Failed to transfer ownership'),
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          },
+                                    child: const Text('Transfer'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        } else {
+                          // Regular leave dialog for non-creators
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Leave Group?'),
+                              content: const Text(
+                                'Are you sure you want to leave this group?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    final success = await provider.leaveGroup(group.id);
+                                    if (context.mounted) {
+                                      Navigator.pop(context); // Close dialog
+                                      if (success) {
+                                        Navigator.pop(context); // Go back to groups list
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text('You have left the group'),
+                                          ),
+                                        );
+                                      } else {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content:
+                                                Text(provider.errorMessage ?? 'Failed to leave group'),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  child: const Text('Leave', style: TextStyle(color: Colors.red)),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      });
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -661,14 +826,17 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      // Copy to clipboard (requires flutter/services)
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Code copied to clipboard'),
-                        ),
-                      );
-                      Navigator.pop(context);
+                    onTap: () async {
+                      // Copy to clipboard
+                      await Clipboard.setData(ClipboardData(text: inviteCode));
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Code copied to clipboard'),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      }
                     },
                     child: Icon(
                       Icons.content_copy,
@@ -759,7 +927,9 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
 
       settlements.add({
         'from': debtorMember.name,
+        'fromId': debtor.key,  // Store user ID
         'to': creditorMember.name,
+        'toId': creditor.key,  // Store user ID
         'amount': amount,
       });
 
@@ -796,8 +966,61 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
     }
 
     return settlements.map((settlement) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: InkWell(
+        onTap: () {
+          // Show confirm settle dialog
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Settle Payment?'),
+              content: Text(
+                'Mark payment of ₹${settlement['amount'].toStringAsFixed(2)} from ${settlement['from']} to ${settlement['to']} as settled?',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                onPressed: () async {
+                  // Call settle API
+                  final provider = Provider.of<SplitWiseProvider>(context, listen: false);
+                  final success = await provider.settleUp(
+                    groupId: group.id,
+                    fromUserId: settlement['fromId'],
+                    toUserId: settlement['toId'],
+                    amount: settlement['amount'],
+                  );
+                  
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Payment settled! ${settlement['from']} paid ${settlement['to']}'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      // Refresh to show updated balances
+                      await provider.fetchGroupById(group.id);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(provider.errorMessage ?? 'Failed to settle payment'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  }
+                },
+                child: const Text('Settle', style: TextStyle(color: Colors.green)),
+              ),
+              ],
+            ),
+          );
+        },
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -846,11 +1069,18 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                   fontSize: 16,
                 ),
               ),
+              const SizedBox(width: 8),
+              const Icon(
+                Icons.check_circle_outline,
+                color: Colors.green,
+                size: 20,
+              ),
             ],
           ),
         ),
-      );
-    }).toList();
+      ),
+    );
+  }).toList();
   }
 
   List<Widget> _buildDetailedSettlements(
