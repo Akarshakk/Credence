@@ -49,13 +49,17 @@ class ApiService {
         uri = uri.replace(queryParameters: queryParams);
       }
       
+      print('[API] GET ${uri.toString()}'); // Debug log
+      
       final response = await http.get(
         uri,
         headers: await _getHeaders(requiresAuth: requiresAuth),
       );
       
+      print('[API] Response: ${response.statusCode}'); // Debug log
       return _handleResponse(response);
     } catch (e) {
+      print('[API] Error: $e'); // Debug log
       return {'success': false, 'message': 'Network error: ${e.toString()}'};
     }
   }
@@ -67,14 +71,19 @@ class ApiService {
     bool requiresAuth = true,
   }) async {
     try {
+      final url = '${ApiConstants.baseUrl}$endpoint';
+      print('[API] POST $url'); // Debug log
+      
       final response = await http.post(
-        Uri.parse('${ApiConstants.baseUrl}$endpoint'),
+        Uri.parse(url),
         headers: await _getHeaders(requiresAuth: requiresAuth),
         body: body != null ? jsonEncode(body) : null,
       );
       
+      print('[API] Response: ${response.statusCode}'); // Debug log
       return _handleResponse(response);
     } catch (e) {
+      print('[API] Error: $e'); // Debug log
       return {'success': false, 'message': 'Network error: ${e.toString()}'};
     }
   }

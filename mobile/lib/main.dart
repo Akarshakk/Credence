@@ -12,6 +12,7 @@ import 'providers/debt_provider.dart';
 import 'providers/splitwise_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/home/debt_list_screen.dart';
+import 'screens/feature_selection_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +48,14 @@ class MyApp extends StatelessWidget {
             themeMode: themeProvider.themeMode,
             home: const SplashScreen(),
             routes: {
+              '/home': (context) => const FeatureSelectionScreen(),
               '/debts': (context) => const DebtListScreen(),
+            },
+            onUnknownRoute: (settings) {
+              // Handle unknown routes gracefully
+              return MaterialPageRoute(
+                builder: (context) => const FeatureSelectionScreen(),
+              );
             },
           );
         },

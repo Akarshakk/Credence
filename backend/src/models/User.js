@@ -39,6 +39,15 @@ const userSchema = new mongoose.Schema({
     min: [0, 'Savings target cannot be negative'],
     max: [100, 'Savings target cannot exceed 100%']
   },
+  kycStatus: {
+    type: String,
+    enum: ['NOT_STARTED', 'PENDING', 'VERIFIED', 'FAILED'],
+    default: 'NOT_STARTED'
+  },
+  kycStep: {
+    type: Number,
+    default: 0, // 0: Not Started, 1: Doc Uploaded, 2: Selfie Verified, 3: Completed
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -46,7 +55,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
   }
@@ -55,14 +64,14 @@ userSchema.pre('save', async function(next) {
 });
 
 // Sign JWT and return
-userSchema.methods.getSignedJwtToken = function() {
+userSchema.methods.getSignedJwtToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE
   });
 };
 
 // Match password
-userSchema.methods.matchPassword = async function(enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

@@ -3,7 +3,16 @@ class ApiConstants {
   // For Android emulator use: 10.0.2.2
   // For iOS simulator use: localhost
   // For physical device use your computer's local IP
-  static const String baseUrl = 'http://localhost:5001/api';
+  
+  // Automatically detect platform and use correct URL
+  static String get baseUrl {
+    // For web
+    if (identical(0, 0.0)) {
+      return 'http://localhost:5001/api';
+    }
+    // For Android emulator
+    return 'http://10.0.2.2:5001/api';
+  }
   
   // Auth endpoints
   static const String register = '/auth/register';

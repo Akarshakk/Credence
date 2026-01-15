@@ -185,47 +185,6 @@ exports.getBalanceChart = async (req, res) => {
     const now = new Date();
     const sevenDaysAgo = startDate;
 
-    // Check if user has expenses on at least 7 unique dates
-    const uniqueDates = await Expense.aggregate([
-      {
-        $match: {
-          user: new mongoose.Types.ObjectId(req.user.id)
-        }
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: '$date' },
-            month: { $month: '$date' },
-            day: { $dayOfMonth: '$date' }
-          }
-        }
-      }
-    ]);
-    
-    const uniqueDaysCount = uniqueDates.length;
-    const REQUIRED_DAYS = 2; // Reduced from 7 for easier testing
-    
-    if (uniqueDaysCount === 0) {
-      return res.status(200).json({
-        success: true,
-        message: 'No expenses found. Start adding expenses to see the balance chart.',
-        hasEnoughData: false,
-        daysRemaining: REQUIRED_DAYS,
-        data: { chartData: [] }
-      });
-    }
-
-    if (uniqueDaysCount < REQUIRED_DAYS) {
-      return res.status(200).json({
-        success: true,
-        message: `Balance chart will be available after ${REQUIRED_DAYS - uniqueDaysCount} more day(s) of entries.`,
-        hasEnoughData: false,
-        daysRemaining: REQUIRED_DAYS - uniqueDaysCount,
-        data: { chartData: [] }
-      });
-    }
-
     // Get daily expenses for the selected week
     const dailyExpenses = await Expense.aggregate([
       {

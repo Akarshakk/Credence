@@ -38,6 +38,8 @@ exports.register = async (req, res) => {
           profilePicture: user.profilePicture,
           monthlyBudget: user.monthlyBudget,
           savingsTarget: user.savingsTarget,
+          kycStatus: user.kycStatus,
+          kycStep: user.kycStep,
           createdAt: user.createdAt
         },
         token

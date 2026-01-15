@@ -1,0 +1,236 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../services/kyc_service.dart';
+import '../feature_selection_screen.dart';
+import 'document_upload_screen.dart';
+import 'selfie_screen.dart';
+import 'mfa_screen.dart';
+
+class KycScreen extends StatefulWidget {
+  @override
+  _KycScreenState createState() => _KycScreenState();
+}
+
+class _KycScreenState extends State<KycScreen> {
+  final KycService _kycService = KycService();
+  int _currentStep = 0;
+  bool _isLoading = true;
+  String _status = 'NOT_STARTED';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchKycStatus();
+  }
+
+  Future<void> _fetchKycStatus() async {
+    try {
+      final data = await _kycService.getKycStatus();
+      setState(() {
+        _currentStep = data['step'] ?? 0;
+        _status = data['status'] ?? 'NOT_STARTED';
+        _isLoading = false;
+      });
+      
+      if (_status == 'VERIFIED') {
+        // Already verified, navigate to feature selection
+        Future.delayed(Duration(milliseconds: 500), () {
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const FeatureSelectionScreen(),
+              ),
+            );
+          }
+        });
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading status: $e'))
+      );
+    }
+  }
+
+  void _nextStep() {
+    if (mounted) {
+      setState(() {
+        _currentStep++;
+      });
+    }
+  }
+
+  void _completeKyc() {
+    if (mounted) {
+      // Show success dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext dialogContext) => WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Column(
+              children: [
+                Icon(Icons.check_circle, color: Colors.green, size: 60),
+                SizedBox(height: 16),
+                Text('Verification Complete!', textAlign: TextAlign.center),
+              ],
+            ),
+            content: Text(
+              'Your account has been successfully verified. Welcome to F-Buddy!',
+              textAlign: TextAlign.center,
+            ),
+            actions: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop(); // Close dialog
+                    // Navigate to feature selection screen
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const FeatureSelectionScreen(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text('Get Started', style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Account Setup'),
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          _buildProgressStepper(),
+          Expanded(
+            child: IndexedStack(
+              index: _currentStep.clamp(0, 3) > 3 ? 3 : _currentStep.clamp(0, 3), 
+              children: [
+                 // Step 0: Document Upload
+                 DocumentUploadScreen(onSuccess: _nextStep),
+                 // Step 1: Selfie
+                 SelfieScreen(onSuccess: _nextStep),
+                 // Step 2: MFA/OTP Verification
+                 MfaScreen(onSuccess: _completeKyc),
+                 // Step 3: Completed (shouldn't normally reach here)
+                 Center(
+                   child: Column(
+                     mainAxisAlignment: MainAxisAlignment.center,
+                     children: [
+                       Icon(Icons.check_circle, color: Colors.green, size: 100),
+                       SizedBox(height: 20),
+                       Text(
+                         'Verification Complete!',
+                         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                       ),
+                       SizedBox(height: 40),
+                       ElevatedButton(
+                         onPressed: () {
+                           Navigator.of(context).pushReplacement(
+                             MaterialPageRoute(
+                               builder: (context) => const FeatureSelectionScreen(),
+                             ),
+                           );
+                         },
+                         style: ElevatedButton.styleFrom(
+                           backgroundColor: Colors.blue,
+                           padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                           shape: RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(12),
+                           ),
+                         ),
+                         child: Text(
+                           'Go to Home',
+                           style: TextStyle(color: Colors.white, fontSize: 16),
+                         ),
+                       ),
+                     ],
+                   ),
+                 ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProgressStepper() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      color: Colors.grey[100],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildStepIcon(0, Icons.upload_file, 'Docs'),
+          _buildLine(0),
+          _buildStepIcon(1, Icons.camera_alt, 'Selfie'),
+          _buildLine(1),
+          _buildStepIcon(2, Icons.security, 'Secure'),
+          _buildLine(2),
+          _buildStepIcon(3, Icons.check_circle, 'Done'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStepIcon(int stepIndex, IconData icon, String label) {
+    bool isActive = _currentStep >= stepIndex;
+    bool isCompleted = _currentStep > stepIndex;
+
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 20,
+          backgroundColor: isActive ? Colors.blue : Colors.grey[300],
+          child: Icon(
+            isCompleted ? Icons.check : icon,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(
+            color: isActive ? Colors.blue : Colors.grey,
+            fontSize: 12,
+            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLine(int stepIndex) {
+    return Expanded(
+      child: Container(
+        height: 2,
+        color: _currentStep > stepIndex ? Colors.blue : Colors.grey[300],
+      ),
+    );
+  }
+}
