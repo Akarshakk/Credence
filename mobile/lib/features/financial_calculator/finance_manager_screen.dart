@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+import '../../config/theme.dart';
+import '../../screens/feature_selection_screen.dart';
 import 'calculators/inflation_calculator.dart';
 import 'calculators/investment_return_calculator.dart';
 import 'calculators/retirement_calculator.dart';
@@ -9,9 +9,11 @@ import 'calculators/emi_calculator.dart';
 import 'calculators/emergency_fund_calculator.dart';
 import 'calculators/health_insurance_calculator.dart';
 import 'calculators/term_insurance_calculator.dart';
+import 'calculators/motor_insurance_calculator.dart';
+import 'pages/coming_soon_page.dart';
+import 'pages/financial_advisory_page.dart';
 
-/// Personal Finance Manager Screen
-/// Yellow sidebar with 8 calculator options, content panel on right
+/// Personal Finance Manager Screen with top navigation bar
 class FinanceManagerScreen extends StatefulWidget {
   const FinanceManagerScreen({super.key});
 
@@ -20,261 +22,289 @@ class FinanceManagerScreen extends StatefulWidget {
 }
 
 class _FinanceManagerScreenState extends State<FinanceManagerScreen> {
-  int _selectedIndex = 0;
+  String _selectedCategory = 'advisory';
+  String _selectedItem = 'advisory';
 
-  final List<_SidebarItem> _menuItems = [
-    _SidebarItem(icon: Icons.trending_up, title: 'Inflation Calculator'),
-    _SidebarItem(icon: Icons.show_chart, title: 'Investment Return'),
-    _SidebarItem(icon: Icons.beach_access, title: 'Retirement Corpus'),
-    _SidebarItem(icon: Icons.savings, title: 'SIP Calculator'),
-    _SidebarItem(icon: Icons.home, title: 'EMI Calculator'),
-    _SidebarItem(icon: Icons.shield, title: 'Emergency Fund'),
-    _SidebarItem(icon: Icons.health_and_safety, title: 'Health Insurance'),
-    _SidebarItem(icon: Icons.security, title: 'Term Insurance'),
+  // Navigation structure
+  final List<_NavCategory> _navCategories = [
+    _NavCategory(
+      id: 'advisory',
+      title: 'Financial Advisory',
+      items: [],
+    ),
+    _NavCategory(
+      id: 'calculators',
+      title: 'Financial Calculators',
+      items: [
+        _NavItem(id: 'inflation', title: 'Inflation Calculator'),
+        _NavItem(id: 'investment', title: 'Investment Return'),
+        _NavItem(id: 'retirement', title: 'Retirement Corpus'),
+        _NavItem(id: 'sip', title: 'SIP Calculator'),
+        _NavItem(id: 'emi', title: 'EMI Calculator'),
+        _NavItem(id: 'emergency', title: 'Emergency Fund'),
+      ],
+    ),
+    _NavCategory(
+      id: 'insurance',
+      title: 'Insurance Management',
+      items: [
+        _NavItem(id: 'term_insurance', title: 'Life - Term Insurance'),
+        _NavItem(id: 'health_insurance', title: 'Health Insurance Premium'),
+        _NavItem(id: 'motor_insurance', title: 'Motor Insurance Premium'),
+      ],
+    ),
+    _NavCategory(
+      id: 'loans',
+      title: 'Loan Management',
+      items: [
+        _NavItem(id: 'home_loan', title: 'Home Loan'),
+        _NavItem(id: 'vehicle_loan', title: 'Vehicle Loan'),
+        _NavItem(id: 'gold_loan', title: 'Gold Loan'),
+      ],
+    ),
+    _NavCategory(
+      id: 'tax',
+      title: 'Tax Management',
+      items: [
+        _NavItem(id: 'itr_planning', title: 'ITR Planning'),
+        _NavItem(id: 'itr_filing', title: 'ITR Filing'),
+      ],
+    ),
   ];
 
-  Widget _getCalculatorWidget(int index) {
-    switch (index) {
-      case 0:
+  Widget _getContentWidget() {
+    switch (_selectedItem) {
+      case 'advisory':
+        return const FinancialAdvisoryPage();
+      case 'inflation':
         return const InflationCalculator();
-      case 1:
+      case 'investment':
         return const InvestmentReturnCalculator();
-      case 2:
+      case 'retirement':
         return const RetirementCalculator();
-      case 3:
+      case 'sip':
         return const SipCalculator();
-      case 4:
+      case 'emi':
         return const EmiCalculator();
-      case 5:
+      case 'emergency':
         return const EmergencyFundCalculator();
-      case 6:
-        return const HealthInsuranceCalculator();
-      case 7:
+      case 'term_insurance':
         return const TermInsuranceCalculator();
+      case 'health_insurance':
+        return const HealthInsuranceCalculator();
+      case 'motor_insurance':
+        return const MotorInsuranceCalculator();
+      case 'home_loan':
+        return const ComingSoonPage(
+            title: 'Home Loan',
+            description: 'Calculate home loan EMI',
+            icon: Icons.home);
+      case 'vehicle_loan':
+        return const ComingSoonPage(
+            title: 'Vehicle Loan',
+            description: 'Calculate vehicle loan EMI',
+            icon: Icons.directions_car);
+      case 'gold_loan':
+        return const ComingSoonPage(
+            title: 'Gold Loan',
+            description: 'Calculate gold loan amount',
+            icon: Icons.diamond);
+      case 'itr_planning':
+        return const ComingSoonPage(
+            title: 'ITR Planning',
+            description: 'Plan income tax efficiently',
+            icon: Icons.account_balance);
+      case 'itr_filing':
+        return const ComingSoonPage(
+            title: 'ITR Filing',
+            description: 'File income tax returns',
+            icon: Icons.description);
       default:
-        return const InflationCalculator();
+        return const FinancialAdvisoryPage();
     }
+  }
+
+  void _goBack() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const FeatureSelectionScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AuthProvider>(context).user;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWide = screenWidth > 800;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? AppColorsDark.background : const Color(0xFFF5F5F5);
+    final surfaceColor = isDark ? AppColorsDark.surface : AppColors.surface;
+    final primaryColor = isDark ? AppColorsDark.primary : AppColors.primary;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      drawer: isWide ? null : _buildDrawer(user),
-      appBar: isWide
-          ? null
-          : AppBar(
-              backgroundColor: const Color(0xFFFFC107),
-              foregroundColor: Colors.black87,
-              title: Text(_menuItems[_selectedIndex].title),
-              elevation: 0,
-            ),
-      body: isWide
-          ? Row(
-              children: [
-                _buildSidebar(user),
-                Expanded(child: _buildContentPanel()),
-              ],
-            )
-          : _buildContentPanel(),
-    );
-  }
-
-  Widget _buildDrawer(dynamic user) {
-    return Drawer(
-      backgroundColor: const Color(0xFFFFC107),
-      child: SafeArea(
-        child: Column(
-          children: [
-            _buildProfileCard(user),
-            const Divider(color: Colors.black12),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _menuItems.length,
-                itemBuilder: (context, index) => _buildMenuItem(index),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSidebar(dynamic user) {
-    return Container(
-      width: 260,
-      color: const Color(0xFFFFC107),
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Logo and menu icon
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.teal.shade300,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.account_balance_wallet,
-                        color: Colors.white, size: 28),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.menu, color: Colors.black87),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-            _buildProfileCard(user),
-            const SizedBox(height: 8),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _menuItems.length,
-                itemBuilder: (context, index) => _buildMenuItem(index),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProfileCard(dynamic user) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF3A6EA5),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: Colors.white,
-            child: Icon(Icons.person, color: Colors.grey[600]),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hi, ${user?.name ?? 'User'}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  user?.email ?? 'user@email.com',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.8),
-                    fontSize: 11,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMenuItem(int index) {
-    final item = _menuItems[index];
-    final isSelected = _selectedIndex == index;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.red : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: ListTile(
-        leading: Icon(
-          item.icon,
-          color: isSelected ? Colors.white : Colors.black87,
-          size: 22,
+      backgroundColor: bgColor,
+      appBar: AppBar(
+        backgroundColor: surfaceColor,
+        elevation: 1,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: primaryColor),
+          onPressed: _goBack,
+          tooltip: 'Back to Menu',
         ),
         title: Text(
-          item.title,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black87,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-            fontSize: 14,
-          ),
+          'Personal Finance Manager',
+          style: AppTextStyles.heading2.copyWith(color: primaryColor),
         ),
-        trailing:
-            const Icon(Icons.chevron_right, color: Colors.black54, size: 20),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-        dense: true,
-        onTap: () {
-          setState(() => _selectedIndex = index);
-          if (MediaQuery.of(context).size.width <= 800) {
-            Navigator.pop(context);
-          }
-        },
+        centerTitle: false,
       ),
-    );
-  }
-
-  Widget _buildContentPanel() {
-    return Container(
-      color: const Color(0xFFF5F5F5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
         children: [
-          // Breadcrumb
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Text(
-                  'App',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                ),
-                const Text(' / ', style: TextStyle(color: Colors.grey)),
-                Text(
-                  _menuItems[_selectedIndex].title,
-                  style: const TextStyle(
-                      color: Colors.teal,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ),
-              ],
+          // Top Navigation Bar with Tabs
+          Container(
+            color: surfaceColor,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: _navCategories.map((category) {
+                  final isSelected = _selectedCategory == category.id;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: category.items.isEmpty
+                        ? _buildSimpleTab(
+                            category, isSelected, primaryColor, isDark)
+                        : _buildDropdownTab(category, isSelected, primaryColor,
+                            isDark, surfaceColor),
+                  );
+                }).toList(),
+              ),
             ),
           ),
-          // Calculator content
+          const Divider(height: 1),
+          // Content Area
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 600),
-                child: _getCalculatorWidget(_selectedIndex),
+              padding: const EdgeInsets.all(24),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: _getContentWidget(),
+                ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSimpleTab(
+      _NavCategory category, bool isSelected, Color primaryColor, bool isDark) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedCategory = category.id;
+          _selectedItem = category.id;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: isSelected ? primaryColor : Colors.transparent,
+              width: 3,
+            ),
+          ),
+        ),
+        child: Text(
+          category.title,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            color: isSelected
+                ? primaryColor
+                : (isDark ? Colors.white70 : Colors.black87),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownTab(_NavCategory category, bool isSelected,
+      Color primaryColor, bool isDark, Color surfaceColor) {
+    return PopupMenuButton<String>(
+      tooltip: category.title,
+      offset: const Offset(0, 50),
+      color: surfaceColor,
+      onSelected: (itemId) {
+        setState(() {
+          _selectedCategory = category.id;
+          _selectedItem = itemId;
+        });
+      },
+      itemBuilder: (context) => category.items.map((item) {
+        final isItemSelected = _selectedItem == item.id;
+        return PopupMenuItem<String>(
+          value: item.id,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(
+              item.title,
+              style: TextStyle(
+                fontWeight:
+                    isItemSelected ? FontWeight.bold : FontWeight.normal,
+                color: isItemSelected ? primaryColor : null,
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: isSelected ? primaryColor : Colors.transparent,
+              width: 3,
+            ),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              category.title,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                color: isSelected
+                    ? primaryColor
+                    : (isDark ? Colors.white70 : Colors.black87),
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(
+              Icons.arrow_drop_down,
+              size: 18,
+              color: isSelected
+                  ? primaryColor
+                  : (isDark ? Colors.white70 : Colors.black54),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _SidebarItem {
-  final IconData icon;
+class _NavCategory {
+  final String id;
+  final String title;
+  final List<_NavItem> items;
+
+  _NavCategory({required this.id, required this.title, required this.items});
+}
+
+class _NavItem {
+  final String id;
   final String title;
 
-  _SidebarItem({required this.icon, required this.title});
+  _NavItem({required this.id, required this.title});
 }

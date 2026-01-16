@@ -5,6 +5,7 @@ import '../../providers/splitwise_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../home/home_screen.dart';
+import '../feature_selection_screen.dart';
 import 'splitwise_groups_tab.dart';
 import 'splitwise_friends_tab.dart';
 import 'splitwise_activity_tab.dart';
@@ -31,7 +32,8 @@ class _SplitwiseHomeScreenState extends State<SplitwiseHomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final splitwiseProvider = Provider.of<SplitWiseProvider>(context, listen: false);
+      final splitwiseProvider =
+          Provider.of<SplitWiseProvider>(context, listen: false);
       splitwiseProvider.fetchGroups();
     });
   }
@@ -39,18 +41,30 @@ class _SplitwiseHomeScreenState extends State<SplitwiseHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? AppColorsDark.background : const Color.fromARGB(255, 228, 228, 228);
+    final bgColor = isDark
+        ? AppColorsDark.background
+        : const Color.fromARGB(255, 228, 228, 228);
     final surfaceColor = isDark ? AppColorsDark.surface : AppColors.surface;
     final primaryColor = isDark ? AppColorsDark.primary : AppColors.primary;
-    final secondaryColor = isDark ? AppColorsDark.secondary : AppColors.secondary;
-    final textPrimaryColor = isDark ? AppColorsDark.textPrimary : AppColors.textPrimary;
-    final textSecondaryColor = isDark ? AppColorsDark.textSecondary : AppColors.textSecondary;
+    final secondaryColor =
+        isDark ? AppColorsDark.secondary : AppColors.secondary;
+    final textPrimaryColor =
+        isDark ? AppColorsDark.textPrimary : AppColors.textPrimary;
+    final textSecondaryColor =
+        isDark ? AppColorsDark.textSecondary : AppColors.textSecondary;
 
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
         backgroundColor: surfaceColor,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: primaryColor),
+          onPressed: () => Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const FeatureSelectionScreen()),
+          ),
+          tooltip: 'Back to Menu',
+        ),
         title: Text(
           'SmartSplit',
           style: AppTextStyles.heading2.copyWith(color: textPrimaryColor),
@@ -63,7 +77,8 @@ class _SplitwiseHomeScreenState extends State<SplitwiseHomeScreen> {
               color: primaryColor,
             ),
             onPressed: () {
-              final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+              final themeProvider =
+                  Provider.of<ThemeProvider>(context, listen: false);
               themeProvider.toggleTheme();
             },
             tooltip: 'Toggle Theme',
@@ -256,9 +271,11 @@ class _SplitwiseHomeScreenState extends State<SplitwiseHomeScreen> {
           TextButton(
             onPressed: () async {
               if (nameController.text.isNotEmpty) {
-                final provider = Provider.of<SplitWiseProvider>(context, listen: false);
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                
+                final provider =
+                    Provider.of<SplitWiseProvider>(context, listen: false);
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
+
                 final success = await provider.createGroup(
                   name: nameController.text,
                   description: descriptionController.text,
@@ -266,11 +283,12 @@ class _SplitwiseHomeScreenState extends State<SplitwiseHomeScreen> {
                   userId: authProvider.user?.id ?? 'user_123',
                   userName: authProvider.user?.name ?? 'User',
                 );
-                
+
                 if (success && mounted) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Group created successfully!')),
+                    const SnackBar(
+                        content: Text('Group created successfully!')),
                   );
                 } else if (mounted && provider.errorMessage != null) {
                   Navigator.pop(context);
