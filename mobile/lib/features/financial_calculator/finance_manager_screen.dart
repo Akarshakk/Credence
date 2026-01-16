@@ -10,8 +10,11 @@ import 'calculators/emergency_fund_calculator.dart';
 import 'calculators/health_insurance_calculator.dart';
 import 'calculators/term_insurance_calculator.dart';
 import 'calculators/motor_insurance_calculator.dart';
-import 'pages/coming_soon_page.dart';
 import 'pages/financial_advisory_page.dart';
+import 'pages/home_loan_page.dart';
+import 'pages/vehicle_loan_page.dart';
+import 'pages/itr_planning_page.dart';
+import 'pages/itr_filing_page.dart';
 
 /// Personal Finance Manager Screen with top navigation bar
 class FinanceManagerScreen extends StatefulWidget {
@@ -59,7 +62,6 @@ class _FinanceManagerScreenState extends State<FinanceManagerScreen> {
       items: [
         _NavItem(id: 'home_loan', title: 'Home Loan'),
         _NavItem(id: 'vehicle_loan', title: 'Vehicle Loan'),
-        _NavItem(id: 'gold_loan', title: 'Gold Loan'),
       ],
     ),
     _NavCategory(
@@ -95,30 +97,13 @@ class _FinanceManagerScreenState extends State<FinanceManagerScreen> {
       case 'motor_insurance':
         return const MotorInsuranceCalculator();
       case 'home_loan':
-        return const ComingSoonPage(
-            title: 'Home Loan',
-            description: 'Calculate home loan EMI',
-            icon: Icons.home);
+        return const HomeLoanPage();
       case 'vehicle_loan':
-        return const ComingSoonPage(
-            title: 'Vehicle Loan',
-            description: 'Calculate vehicle loan EMI',
-            icon: Icons.directions_car);
-      case 'gold_loan':
-        return const ComingSoonPage(
-            title: 'Gold Loan',
-            description: 'Calculate gold loan amount',
-            icon: Icons.diamond);
+        return const VehicleLoanPage();
       case 'itr_planning':
-        return const ComingSoonPage(
-            title: 'ITR Planning',
-            description: 'Plan income tax efficiently',
-            icon: Icons.account_balance);
+        return const ItrPlanningPage();
       case 'itr_filing':
-        return const ComingSoonPage(
-            title: 'ITR Filing',
-            description: 'File income tax returns',
-            icon: Icons.description);
+        return const ItrFilingPage();
       default:
         return const FinancialAdvisoryPage();
     }
