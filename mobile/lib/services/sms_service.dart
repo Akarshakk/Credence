@@ -7,7 +7,7 @@ import 'dart:convert';
 
 class SmsService {
   final Telephony telephony = Telephony.instance;
-  final ApiService apiService = ApiService();
+// final ApiService apiService = ApiService(); // Removed as methods are static
   final NotificationService notificationService = NotificationService();
 
   // Bank and payment app identifiers
@@ -121,9 +121,9 @@ class SmsService {
       final smsId = message.id?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
 
       // Send to backend for parsing
-      final response = await apiService.post(
+      final response = await ApiService.post(
         '/sms/parse',
-        {
+        body: {
           'smsText': body,
           'sender': sender,
           'smsId': smsId,
@@ -157,9 +157,9 @@ class SmsService {
     try {
       print('[SMS Service] 💾 Auto-saving transaction (high confidence)...');
       
-      final response = await apiService.post(
+      final response = await ApiService.post(
         '/sms/save',
-        {
+        body: {
           'transaction': transaction,
           'smsId': smsId,
         },
@@ -252,9 +252,9 @@ class SmsService {
       }
 
       // Send to backend for bulk parsing
-      final response = await apiService.post(
+      final response = await ApiService.post(
         '/sms/parse-bulk',
-        {'smsArray': smsArray},
+        body: {'smsArray': smsArray},
       );
 
       if (response['success'] == true) {
@@ -275,7 +275,7 @@ class SmsService {
   /// Get SMS-created transactions from backend
   Future<Map<String, dynamic>> getSmsTransactions() async {
     try {
-      final response = await apiService.get('/sms/transactions');
+      final response = await ApiService.get('/sms/transactions');
       if (response['success'] == true) {
         return {
           'expenses': response['expenses'] ?? [],

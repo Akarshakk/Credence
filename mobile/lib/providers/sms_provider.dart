@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../services/sms_service.dart';
 import '../services/notification_service.dart';
+import '../services/api_service.dart';
 
 class SmsProvider with ChangeNotifier {
   final SmsService _smsService = SmsService();
@@ -123,9 +124,9 @@ class SmsProvider with ChangeNotifier {
 
       for (var transaction in transactions) {
         try {
-          final response = await _smsService.apiService.post(
+          final response = await ApiService.post(
             '/sms/save',
-            {
+            body: {
               'transaction': transaction,
               'smsId': transaction['smsId'] ?? DateTime.now().toString(),
             },
