@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../screens/feature_selection_screen.dart';
+import '../../widgets/rag_chat_widget.dart';
 import 'calculators/inflation_calculator.dart';
 import 'calculators/investment_return_calculator.dart';
 import 'calculators/retirement_calculator.dart';
@@ -153,42 +154,48 @@ class _FinanceManagerScreenState extends State<FinanceManagerScreen> {
         ),
         centerTitle: false,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          // Top Navigation Bar with Tabs
-          Container(
-            color: surfaceColor,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                children: _navCategories.map((category) {
-                  final isSelected = _selectedCategory == category.id;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: category.items.isEmpty
-                        ? _buildSimpleTab(
-                            category, isSelected, primaryColor, isDark)
-                        : _buildDropdownTab(category, isSelected, primaryColor,
-                            isDark, surfaceColor),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-          const Divider(height: 1),
-          // Content Area
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 700),
-                  child: _getContentWidget(),
+          Column(
+            children: [
+              // Top Navigation Bar with Tabs
+              Container(
+                color: surfaceColor,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    children: _navCategories.map((category) {
+                      final isSelected = _selectedCategory == category.id;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: category.items.isEmpty
+                            ? _buildSimpleTab(
+                                category, isSelected, primaryColor, isDark)
+                            : _buildDropdownTab(category, isSelected, primaryColor,
+                                isDark, surfaceColor),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
-            ),
+              const Divider(height: 1),
+              // Content Area
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 700),
+                      child: _getContentWidget(),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
+          // RAG Chat Widget - Floating in bottom right corner
+          const RagChatWidget(),
         ],
       ),
     );
