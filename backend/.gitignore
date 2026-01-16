@@ -3,3 +3,5 @@ node_modules/
 *.log
 .DS_Store
 firebase-service-account.json
+rag_service/uploads/
+rag_service/__pycache__/
