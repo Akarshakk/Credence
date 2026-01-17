@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:f_buddy/l10n/app_localizations.dart';
-import 'package:f_buddy/widgets/auto_translated_text.dart';
+import 'package:credence/l10n/app_localizations.dart';
+import 'package:credence/widgets/auto_translated_text.dart';
 import 'dart:math';
 
 /// Investment Return Calculator (Inflation Adjusted)
@@ -162,3 +162,5 @@ class _InvestmentReturnCalculatorState
     );
   }
 }
+
+

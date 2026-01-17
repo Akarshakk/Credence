@@ -14,7 +14,7 @@ class AppLocalizations {
 
   static const _localizedValues = <String, Map<String, String>>{
     'en': {
-      'app_title': 'F Buddy',
+      'app_title': 'Credence',
       'yes': 'Yes',
       'no': 'No',
       'enter_financial_details': 'Please enter all financial details',
@@ -240,3 +240,5 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
 extension AppLocalizationExtension on BuildContext {
   AppLocalizations get l10n => Localizations.of<AppLocalizations>(this, AppLocalizations)!;
 }
+
+

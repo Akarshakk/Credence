@@ -1,147 +1,153 @@
 import 'package:flutter/material.dart';
 
-// Light Theme Colors
+// ============================================================================
+// CREDENCE MINIMAL FINTECH THEME
+// Slate/Zinc neutrals + Emerald/Rose accents for a clean, professional look
+// ============================================================================
+
+// Light Theme Colors - Clean, minimal, high contrast
 class AppColors {
-  // Primary Colors - Modern Teal Blue
-  static const Color primary = Color(0xFF0F766E);
-  static const Color primaryLight = Color(0xFF14B8A6);
-  static const Color primaryDark = Color(0xFF0D5A52);
+  // Primary - Deep Slate (used for key actions)
+  static const Color primary = Color(0xFF1E293B);
+  static const Color primaryLight = Color(0xFF334155);
+  static const Color primaryDark = Color(0xFF0F172A);
   
-  // Secondary Colors - Warm Orange
-  static const Color secondary = Color(0xFFF97316);
-  static const Color secondaryLight = Color(0xFFFB923C);
-  static const Color secondaryDark = Color(0xFFEA580C);
+  // Secondary - Subtle accent
+  static const Color secondary = Color(0xFF64748B);
+  static const Color secondaryLight = Color(0xFF94A3B8);
+  static const Color secondaryDark = Color(0xFF475569);
   
-  // Background Colors - Eggshell White & Clean
-  static const Color background = Color(0xFFFAFAFA); // Eggshell white
-  static const Color surface = Color(0xFFFDFCFB); // Eggshell white for cards
-  static const Color eggshellWhite = Color(0xFFFDFCFB); // Pure eggshell
-  static const Color surfaceDark = Color(0xFF121212);
+  // Background - Off-white for reduced eye strain
+  static const Color background = Color(0xFFFAFAFA);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceDark = Color(0xFF1A1A1A);
+  static const Color eggshellWhite = Color(0xFFFAFAFA);
   
-  // Text Colors - High Contrast
-  static const Color textPrimary = Color(0xFF1F2937);
-  static const Color textSecondary = Color(0xFF9CA3AF);
+  // Text - High contrast
+  static const Color textPrimary = Color(0xFF0F172A);
+  static const Color textSecondary = Color(0xFF64748B);
   static const Color textLight = Color(0xFFFFFFFF);
   
-  // Status Colors - Refined
-  static const Color success = Color(0xFF16A34A);
+  // Status Colors - Clear and distinct
+  static const Color success = Color(0xFF10B981);
   static const Color warning = Color(0xFFF59E0B);
-  static const Color error = Color(0xFFDC2626);
-  static const Color info = Color(0xFF0EA5E9);
+  static const Color error = Color(0xFFF43F5E);
+  static const Color info = Color(0xFF3B82F6);
   
-  // Income/Expense Colors
-  static const Color income = Color(0xFF16A34A);
-  static const Color expense = Color(0xFFDC2626);
-  static const Color balance = Color(0xFF0F766E);
+  // Financial Colors - Income/Expense
+  static const Color income = Color(0xFF10B981);
+  static const Color expense = Color(0xFFF43F5E);
+  static const Color balance = Color(0xFF1E293B);
   
-  // Category Colors - Minimal Earth Tones
+  // Borders
+  static const Color border = Color(0xFFE2E8F0);
+  static const Color borderDark = Color(0xFFCBD5E1);
+  
+  // Category Colors - Muted, professional
   static const Map<String, Color> categoryColors = {
     'clothes': Color(0xFF8B5CF6),
     'drinks': Color(0xFFF97316),
-    'education': Color(0xFF0EA5E9),
-    'food': Color(0xFF16A34A),
-    'fuel': Color(0xFF78716C),
+    'education': Color(0xFF3B82F6),
+    'food': Color(0xFF10B981),
+    'fuel': Color(0xFF71717A),
     'fun': Color(0xFFEC4899),
     'health': Color(0xFF06B6D4),
-    'hotel': Color(0xFF3B82F6),
+    'hotel': Color(0xFF6366F1),
     'personal': Color(0xFF64748B),
     'pets': Color(0xFF84CC16),
-    'restaurants': Color(0xFFEA580C),
-    'tips': Color(0xFFFCD34D),
-    'transport': Color(0xFF14B8A6),
-    'others': Color(0xFFA3A3A3),
+    'restaurants': Color(0xFFEF4444),
+    'tips': Color(0xFFF59E0B),
+    'transport': Color(0xFF0EA5E9),
+    'others': Color(0xFF94A3B8),
   };
   
-  // Chart Colors - Cohesive Minimal Palette
+  // Chart Colors - Cohesive palette
   static const List<Color> chartColors = [
-    Color(0xFF0F766E),
-    Color(0xFFF97316),
-    Color(0xFF0EA5E9),
-    Color(0xFF16A34A),
-    Color(0xFFEC4899),
-    Color(0xFF14B8A6),
-    Color(0xFFFCD34D),
-    Color(0xFFF59E0B),
+    Color(0xFF1E293B),
+    Color(0xFF10B981),
     Color(0xFF3B82F6),
-    Color(0xFF06B6D4),
-    Color(0xFF84CC16),
-    Color(0xFF78716C),
-    Color(0xFFDC2626),
+    Color(0xFFF43F5E),
+    Color(0xFFF59E0B),
     Color(0xFF8B5CF6),
+    Color(0xFF06B6D4),
+    Color(0xFFEC4899),
+    Color(0xFF84CC16),
+    Color(0xFF6366F1),
   ];
 }
 
-// Dark Theme Colors - Mirror of light theme but with darkest palette
+// Dark Theme Colors - Deep blacks with bright accents
 class AppColorsDark {
-  // Primary Colors - Bright teal for high contrast on dark backgrounds
-  static const Color primary = Color(0xFF14B8A6);      // Bright teal
-  static const Color primaryLight = Color(0xFF2DD4BF);  // Light cyan for hover
-  static const Color primaryDark = Color(0xFF0D9488);   // Darker teal for subtle
+  // Primary - Bright for visibility on dark
+  static const Color primary = Color(0xFFF8FAFC);
+  static const Color primaryLight = Color(0xFFFFFFFF);
+  static const Color primaryDark = Color(0xFFE2E8F0);
   
-  // Secondary Colors - Bright orange for high contrast
-  static const Color secondary = Color(0xFFFB923C);    // Bright orange
-  static const Color secondaryLight = Color(0xFFFFBD71); // Light orange for hover
-  static const Color secondaryDark = Color(0xFFF97316);  // Darker orange
+  // Secondary
+  static const Color secondary = Color(0xFF94A3B8);
+  static const Color secondaryLight = Color(0xFFCBD5E1);
+  static const Color secondaryDark = Color(0xFF64748B);
   
-  // Background Colors - Darkest palette (near black)
-  static const Color background = Color(0xFF0A0E27);   // Darkest blue-black (almost black)
-  static const Color surface = Color(0xFF16213E);      // Very dark blue for surfaces
-  static const Color surfaceLight = Color(0xFF1F3A52); // Dark blue for cards
+  // Background - True dark mode
+  static const Color background = Color(0xFF0F0F0F);
+  static const Color surface = Color(0xFF1A1A1A);
+  static const Color surfaceLight = Color(0xFF262626);
   
-  // Text Colors - High contrast without pure whites
-  static const Color textPrimary = Color(0xFFD1D5DB);  // Light gray (no white)
-  static const Color textSecondary = Color(0xFF9CA3AF); // Medium gray for secondary
-  static const Color textLight = Color(0xFFE5E7EB);    // Off-white (not pure white)
+  // Text - High contrast on dark
+  static const Color textPrimary = Color(0xFFF1F5F9);
+  static const Color textSecondary = Color(0xFFA1A1AA);
+  static const Color textLight = Color(0xFFFAFAFA);
   
-  // Status Colors - Optimized for dark backgrounds
-  static const Color success = Color(0xFF10B981);      // Emerald green
-  static const Color warning = Color(0xFFFDE047);      // Bright yellow
-  static const Color error = Color(0xFFF87171);        // Coral red
-  static const Color info = Color(0xFF06B6D4);         // Cyan blue
+  // Status Colors - Brighter for dark backgrounds
+  static const Color success = Color(0xFF34D399);
+  static const Color warning = Color(0xFFFBBF24);
+  static const Color error = Color(0xFFFB7185);
+  static const Color info = Color(0xFF60A5FA);
   
-  // Accent Colors - Income/Expense tracking
-  static const Color income = Color(0xFF10B981);       // Emerald green
-  static const Color expense = Color(0xFFFB7185);      // Rose pink
-  static const Color debt = Color(0xFF60A5FA);         // Bright blue
-  static const Color balance = Color(0xFF14B8A6);      // Teal
+  // Financial Colors
+  static const Color income = Color(0xFF34D399);
+  static const Color expense = Color(0xFFFB7185);
+  static const Color debt = Color(0xFF60A5FA);
+  static const Color balance = Color(0xFFF1F5F9);
   
-  // Category Colors - Adjusted for dark theme with high saturation
+  // Borders
+  static const Color border = Color(0xFF27272A);
+  static const Color borderLight = Color(0xFF3F3F46);
+  
+  // Category Colors - Brighter for dark theme
   static const Map<String, Color> categoryColors = {
-    'clothes': Color(0xFFC084FC),
+    'clothes': Color(0xFFA78BFA),
     'drinks': Color(0xFFFB923C),
-    'education': Color(0xFF38BDF8),
-    'food': Color(0xFF22C55E),
-    'fuel': Color(0xFFA78BFA),
+    'education': Color(0xFF60A5FA),
+    'food': Color(0xFF34D399),
+    'fuel': Color(0xFFA1A1AA),
     'fun': Color(0xFFF472B6),
-    'health': Color(0xFF06B6D4),
-    'hotel': Color(0xFF60A5FA),
+    'health': Color(0xFF22D3EE),
+    'hotel': Color(0xFF818CF8),
     'personal': Color(0xFF94A3B8),
     'pets': Color(0xFFA3E635),
     'restaurants': Color(0xFFFB7185),
-    'tips': Color(0xFFFDE047),
-    'transport': Color(0xFF2DD4BF),
-    'others': Color(0xFF9CA3AF),
+    'tips': Color(0xFFFBBF24),
+    'transport': Color(0xFF38BDF8),
+    'others': Color(0xFFA1A1AA),
   };
   
-  // Chart Colors - High contrast for dark backgrounds
+  // Chart Colors
   static const List<Color> chartColors = [
-    Color(0xFF14B8A6),  // Teal
-    Color(0xFFFB923C),  // Orange
-    Color(0xFF06B6D4),  // Cyan
-    Color(0xFF10B981),  // Green
-    Color(0xFFF472B6),  // Pink
-    Color(0xFF2DD4BF),  // Light teal
-    Color(0xFFFDE047),  // Yellow
-    Color(0xFFFB7185),  // Rose
-    Color(0xFF60A5FA),  // Blue
-    Color(0xFF34D399),  // Emerald
-    Color(0xFFC084FC),  // Purple
-    Color(0xFFA78BFA),  // Violet
-    Color(0xFFFF9999),  // Light red
-    Color(0xFFFFBD71),  // Light orange
+    Color(0xFFF8FAFC),
+    Color(0xFF34D399),
+    Color(0xFF60A5FA),
+    Color(0xFFFB7185),
+    Color(0xFFFBBF24),
+    Color(0xFFA78BFA),
+    Color(0xFF22D3EE),
+    Color(0xFFF472B6),
+    Color(0xFFA3E635),
+    Color(0xFF818CF8),
   ];
 }
 
+// Color Helper - Dynamic color access based on theme
 class ColorHelper {
   static Color getPrimaryColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
@@ -208,21 +214,30 @@ class ColorHelper {
         ? AppColorsDark.expense
         : AppColors.expense;
   }
+
+  static Color getBorderColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? AppColorsDark.border
+        : AppColors.border;
+  }
 }
 
+// Text Styles - Clean typography
 class AppTextStyles {
   static const TextStyle heading1 = TextStyle(
     fontSize: 32,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
     letterSpacing: -0.5,
+    height: 1.2,
   );
   
   static const TextStyle heading2 = TextStyle(
     fontSize: 24,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
     letterSpacing: -0.3,
+    height: 1.3,
   );
   
   static const TextStyle heading3 = TextStyle(
@@ -230,11 +245,12 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
     letterSpacing: -0.2,
+    height: 1.4,
   );
   
   static const TextStyle body1 = TextStyle(
     fontSize: 16,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     color: AppColors.textPrimary,
     height: 1.5,
   );
@@ -243,55 +259,50 @@ class AppTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.textSecondary,
-    height: 1.4,
+    height: 1.5,
   );
   
   static const TextStyle caption = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: AppColors.textSecondary,
-    height: 1.3,
+    height: 1.4,
   );
   
   static const TextStyle button = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.textLight,
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
   );
 }
 
+// Decorations - Subtle, modern styling
 class AppDecorations {
   static BoxDecoration cardDecoration = BoxDecoration(
     color: AppColors.surface,
     borderRadius: BorderRadius.circular(12),
+    border: Border.all(color: AppColors.border, width: 1),
     boxShadow: [
       BoxShadow(
         color: Colors.black.withOpacity(0.04),
-        blurRadius: 6,
+        blurRadius: 8,
         offset: const Offset(0, 2),
       ),
     ],
-    border: Border.all(
-      color: Colors.grey.shade200,
-      width: 1,
-    ),
   );
   
   static BoxDecoration cardDecorationDark = BoxDecoration(
     color: AppColorsDark.surface,
     borderRadius: BorderRadius.circular(12),
+    border: Border.all(color: AppColorsDark.border, width: 1),
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.3),
-        blurRadius: 6,
+        color: Colors.black.withOpacity(0.2),
+        blurRadius: 8,
         offset: const Offset(0, 2),
       ),
     ],
-    border: Border.all(
-      color: Colors.grey.shade800,
-      width: 1,
-    ),
   );
   
   static BoxDecoration gradientDecoration = const BoxDecoration(
@@ -307,42 +318,37 @@ class AppDecorations {
     gradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: [AppColorsDark.primary, AppColorsDark.primaryLight],
+      colors: [AppColorsDark.surface, AppColorsDark.surfaceLight],
     ),
     borderRadius: BorderRadius.all(Radius.circular(12)),
   );
   
   static BoxDecoration buttonDecoration = BoxDecoration(
     color: AppColors.primary,
-    borderRadius: BorderRadius.circular(10),
-    boxShadow: [
-      BoxShadow(
-        color: AppColors.primary.withOpacity(0.2),
-        blurRadius: 8,
-        offset: const Offset(0, 2),
-      ),
-    ],
+    borderRadius: BorderRadius.circular(8),
   );
   
   static BoxDecoration buttonDecorationDark = BoxDecoration(
     color: AppColorsDark.primary,
-    borderRadius: BorderRadius.circular(10),
-    boxShadow: [
-      BoxShadow(
-        color: AppColorsDark.primary.withOpacity(0.3),
-        blurRadius: 8,
-        offset: const Offset(0, 2),
-      ),
-    ],
+    borderRadius: BorderRadius.circular(8),
   );
+
+  // Helper to get card decoration based on theme
+  static BoxDecoration getCardDecoration(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? cardDecorationDark
+        : cardDecoration;
+  }
 }
 
-// Theme Data Builders
+// Theme Data - Complete theme definitions
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
     scaffoldBackgroundColor: AppColors.background,
+    
+    // AppBar
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.background,
       foregroundColor: AppColors.textPrimary,
@@ -352,54 +358,122 @@ class AppTheme {
         color: AppColors.textPrimary,
         fontSize: 20,
         fontWeight: FontWeight.w600,
+        letterSpacing: -0.3,
       ),
     ),
+    
+    // Input Fields - Clear borders for visibility
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: const Color(0xFFFDFCFB),
+      fillColor: AppColors.surface,
+      hintStyle: TextStyle(color: AppColors.textSecondary.withOpacity(0.7)),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: Colors.grey.shade200),
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.border),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: Colors.grey.shade200),
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.border),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: AppColors.primary, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.error),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     ),
+    
+    // Buttons
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
         ),
         elevation: 0,
+        textStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     ),
+    
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.primary,
+        side: const BorderSide(color: AppColors.primary),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    ),
+    
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: AppColors.primary,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
     ),
-    chipTheme: ChipThemeData(
-      backgroundColor: AppColors.primaryLight.withOpacity(0.2),
-      labelStyle: const TextStyle(color: AppColors.primary),
-      deleteIconColor: AppColors.primary,
+    
+    // Cards
+    cardTheme: CardThemeData(
+      color: AppColors.surface,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: AppColors.border),
+      ),
     ),
-    dividerColor: Colors.grey.shade200,
-    cardColor: AppColors.surface,
+    
+    // Chips
+    chipTheme: ChipThemeData(
+      backgroundColor: AppColors.background,
+      labelStyle: const TextStyle(color: AppColors.textPrimary),
+      side: const BorderSide(color: AppColors.border),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
+    
+    // Dividers
+    dividerColor: AppColors.border,
+    dividerTheme: const DividerThemeData(
+      color: AppColors.border,
+      thickness: 1,
+    ),
+    
+    // Bottom Navigation
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: AppColors.surface,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.textSecondary,
+      type: BottomNavigationBarType.fixed,
+      elevation: 0,
+    ),
+    
+    // FAB
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: AppColors.primary,
+      foregroundColor: Colors.white,
+      elevation: 2,
+    ),
+    
+    // Color Scheme
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
       secondary: AppColors.secondary,
       surface: AppColors.surface,
       error: AppColors.error,
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+      onSurface: AppColors.textPrimary,
+      onError: Colors.white,
     ),
   );
 
@@ -407,6 +481,8 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppColorsDark.background,
+    
+    // AppBar
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColorsDark.background,
       foregroundColor: AppColorsDark.textPrimary,
@@ -416,54 +492,123 @@ class AppTheme {
         color: AppColorsDark.textPrimary,
         fontSize: 20,
         fontWeight: FontWeight.w600,
+        letterSpacing: -0.3,
       ),
     ),
+    
+    // Input Fields - Clear visibility on dark
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColorsDark.surface,
+      hintStyle: TextStyle(color: AppColorsDark.textSecondary.withOpacity(0.7)),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: Colors.grey.shade700),
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColorsDark.border),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: Colors.grey.shade700),
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColorsDark.border),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: AppColorsDark.primary, width: 2),
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: AppColorsDark.primary, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColorsDark.error),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     ),
+    
+    // Buttons
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColorsDark.primary,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        foregroundColor: AppColorsDark.background,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
         ),
         elevation: 0,
+        textStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     ),
+    
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColorsDark.primary,
+        side: BorderSide(color: AppColorsDark.primary),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    ),
+    
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: AppColorsDark.primary,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
     ),
-    chipTheme: ChipThemeData(
-      backgroundColor: AppColorsDark.primary.withOpacity(0.2),
-      labelStyle: const TextStyle(color: AppColorsDark.primary),
-      deleteIconColor: AppColorsDark.primary,
+    
+    // Cards
+    cardTheme: CardThemeData(
+      color: AppColorsDark.surface,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: AppColorsDark.border),
+      ),
     ),
-    dividerColor: Colors.grey.shade800,
-    cardColor: AppColorsDark.surface,
-    colorScheme: const ColorScheme.dark(
+    
+    // Chips
+    chipTheme: ChipThemeData(
+      backgroundColor: AppColorsDark.surface,
+      labelStyle: const TextStyle(color: AppColorsDark.textPrimary),
+      side: const BorderSide(color: AppColorsDark.border),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
+    
+    // Dividers
+    dividerColor: AppColorsDark.border,
+    dividerTheme: const DividerThemeData(
+      color: AppColorsDark.border,
+      thickness: 1,
+    ),
+    
+    // Bottom Navigation
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: AppColorsDark.surface,
+      selectedItemColor: AppColorsDark.primary,
+      unselectedItemColor: AppColorsDark.textSecondary,
+      type: BottomNavigationBarType.fixed,
+      elevation: 0,
+    ),
+    
+    // FAB
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: AppColorsDark.primary,
+      foregroundColor: AppColorsDark.background,
+      elevation: 2,
+    ),
+    
+    // Color Scheme
+    colorScheme: ColorScheme.dark(
       primary: AppColorsDark.primary,
       secondary: AppColorsDark.secondary,
       surface: AppColorsDark.surface,
       error: AppColorsDark.error,
+      onPrimary: AppColorsDark.background,
+      onSecondary: AppColorsDark.background,
+      onSurface: AppColorsDark.textPrimary,
+      onError: Colors.white,
     ),
   );
 }
+

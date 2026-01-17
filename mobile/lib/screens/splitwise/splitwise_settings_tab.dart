@@ -250,3 +250,5 @@ class SplitwiseSettingsTab extends StatelessWidget {
     );
   }
 }
+
+

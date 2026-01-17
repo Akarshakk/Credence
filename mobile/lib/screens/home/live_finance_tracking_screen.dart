@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../config/theme.dart';
 import '../../widgets/auto_translated_text.dart';
@@ -161,7 +161,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
           children: [
             // Annual Income Section
             _buildSectionCard(
-              title: 'ðŸ’° Annual Income',
+              title: '💰 Annual Income',
               color: Colors.green,
               surfaceColor: surfaceColor,
               child: Column(
@@ -173,7 +173,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
                     decoration: InputDecoration(
                       labelText: 'Annual Income',
                       hintText: 'Enter your total annual income',
-                      prefixText: 'â‚¹ ',
+                      prefixText: '₹ ',
                       prefixIcon: const Icon(Icons.currency_rupee),
                       filled: true,
                       fillColor: bgColor,
@@ -189,7 +189,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
 
             // Loans Section
             _buildSectionCard(
-              title: 'ðŸ¦ Existing Loans',
+              title: '🏦 Existing Loans',
               color: Colors.red,
               surfaceColor: surfaceColor,
               child: Column(
@@ -220,7 +220,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: 'Outstanding',
-                            prefixText: 'â‚¹ ',
+                            prefixText: '₹ ',
                             filled: true,
                             fillColor: bgColor,
                             border: OutlineInputBorder(
@@ -238,7 +238,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: 'Monthly EMI',
-                            prefixText: 'â‚¹ ',
+                            prefixText: '₹ ',
                             filled: true,
                             fillColor: bgColor,
                             border: OutlineInputBorder(
@@ -272,7 +272,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
 
             // SIPs Section
             _buildSectionCard(
-              title: 'ðŸ“ˆ SIPs (Systematic Investment Plans)',
+              title: '📈 SIPs (Systematic Investment Plans)',
               color: Colors.blue,
               surfaceColor: surfaceColor,
               child: Column(
@@ -303,7 +303,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: 'Monthly Amount',
-                            prefixText: 'â‚¹ ',
+                            prefixText: '₹ ',
                             filled: true,
                             fillColor: bgColor,
                             border: OutlineInputBorder(
@@ -337,7 +337,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
 
             // Insurance Section
             _buildSectionCard(
-              title: 'ðŸ›¡ï¸ Insurance',
+              title: '🛡️ Insurance',
               color: Colors.teal,
               surfaceColor: surfaceColor,
               child: Column(
@@ -368,7 +368,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: 'Premium',
-                            prefixText: 'â‚¹ ',
+                            prefixText: '₹ ',
                             filled: true,
                             fillColor: bgColor,
                             border: OutlineInputBorder(
@@ -428,7 +428,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
 
             // Investments Section
             _buildSectionCard(
-              title: 'ðŸ’Ž Investments',
+              title: '💎 Investments',
               color: Colors.purple,
               surfaceColor: surfaceColor,
               child: Column(
@@ -459,7 +459,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: 'Value',
-                            prefixText: 'â‚¹ ',
+                            prefixText: '₹ ',
                             filled: true,
                             fillColor: bgColor,
                             border: OutlineInputBorder(
@@ -536,7 +536,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
             // Charts Section
             if (_hasData) ...[
               const AutoTranslatedText(
-                'ðŸ“Š Financial Overview',
+                '📊 Financial Overview',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -697,12 +697,12 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
                   style: const TextStyle(fontWeight: FontWeight.w500)),
               /*
               if ((insure['cover'] as double) > 0)
-                Text('Cover: â‚¹${_formatNumber(insure['cover'])}', 
+                Text('Cover: ₹${_formatNumber(insure['cover'])}', 
                      style: TextStyle(fontSize: 10, color: Colors.grey.shade600))
               */
             ],
           )),
-          Text('â‚¹${_formatNumber(insure['premium'])}',
+          Text('₹${_formatNumber(insure['premium'])}',
               style: const TextStyle(fontWeight: FontWeight.bold)),
           IconButton(
             icon: const Icon(Icons.delete, size: 18),
@@ -913,10 +913,10 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
           Expanded(
               child: Text(loan['name'],
                   style: const TextStyle(fontWeight: FontWeight.w500))),
-          Text('₹${_formatNumber(loan['amount'])}',
+          Text('?${_formatNumber(loan['amount'])}',
               style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(width: 16),
-          Text('EMI: ₹${_formatNumber(loan['emi'])}/mo',
+          Text('EMI: ?${_formatNumber(loan['emi'])}/mo',
               style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
           IconButton(
             icon: const Icon(Icons.delete, size: 18),
@@ -941,7 +941,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
           Expanded(
               child: Text(sip['name'],
                   style: const TextStyle(fontWeight: FontWeight.w500))),
-          Text('₹${_formatNumber(sip['amount'])}/mo',
+          Text('?${_formatNumber(sip['amount'])}/mo',
               style: const TextStyle(fontWeight: FontWeight.bold)),
           IconButton(
             icon: const Icon(Icons.delete, size: 18),
@@ -976,7 +976,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
           Expanded(
               child: Text(invest['name'],
                   style: const TextStyle(fontWeight: FontWeight.w500))),
-          Text('₹${_formatNumber(invest['amount'])}',
+          Text('?${_formatNumber(invest['amount'])}',
               style: const TextStyle(fontWeight: FontWeight.bold)),
           IconButton(
             icon: const Icon(Icons.delete, size: 18),
@@ -1213,7 +1213,7 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
       ),
       child: Column(
         children: [
-          const Text('📊 Financial Health Report',
+          const Text('?? Financial Health Report',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -1226,14 +1226,14 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
             children: [
               _buildSummaryValue(
                   'Net Worth',
-                  '₹${_formatNumber(totalInvestments - totalLoans)}',
+                  '?${_formatNumber(totalInvestments - totalLoans)}',
                   (totalInvestments - totalLoans) >= 0
                       ? Colors.greenAccent
                       : Colors.redAccent,
                   isLarge: true),
               _buildSummaryValue(
                   'Monthly Surplus',
-                  '₹${_formatNumber(monthlySurplus)}',
+                  '?${_formatNumber(monthlySurplus)}',
                   monthlySurplus >= 0 ? Colors.white : Colors.redAccent,
                   isLarge: true),
             ],
@@ -1282,19 +1282,19 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
               TableRow(children: [
                 _buildSummaryText(
                     'Total Assets',
-                    '₹${_formatNumber(totalInvestments)}',
+                    '?${_formatNumber(totalInvestments)}',
                     Colors.blue.shade200),
                 _buildSummaryText('Total Liabilities',
-                    '₹${_formatNumber(totalLoans)}', Colors.red.shade200),
+                    '?${_formatNumber(totalLoans)}', Colors.red.shade200),
               ]),
               const TableRow(
                   children: [SizedBox(height: 12), SizedBox(height: 12)]),
               TableRow(children: [
                 _buildSummaryText('Monthly Income',
-                    '₹${_formatNumber(monthlyIncome)}', Colors.green.shade200),
+                    '?${_formatNumber(monthlyIncome)}', Colors.green.shade200),
                 _buildSummaryText(
                     'Monthly Outflow',
-                    '₹${_formatNumber(totalMonthlyOutflow)}',
+                    '?${_formatNumber(totalMonthlyOutflow)}',
                     Colors.orange.shade200),
               ]),
             ],
@@ -1343,3 +1343,5 @@ class _LiveFinanceTrackingScreenState extends State<LiveFinanceTrackingScreen> {
         );
   }
 }
+
+

@@ -274,3 +274,5 @@ class SplitwiseActivityTab extends StatelessWidget {
     );
   }
 }
+
+

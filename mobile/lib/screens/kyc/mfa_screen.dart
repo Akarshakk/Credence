@@ -89,7 +89,7 @@ class _MfaScreenState extends State<MfaScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('✓ Verification Complete! Welcome to F-Buddy!'),
+            content: Text('✓ Verification Complete! Welcome to Credence!'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 2),
           )
@@ -237,3 +237,5 @@ class _MfaScreenState extends State<MfaScreen> {
     );
   }
 }
+
+

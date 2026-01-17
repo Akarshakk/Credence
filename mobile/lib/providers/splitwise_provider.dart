@@ -427,3 +427,5 @@ class SplitWiseProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+

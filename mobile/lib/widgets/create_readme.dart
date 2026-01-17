@@ -5,9 +5,9 @@ void main() {
   
   final readme = File('README.md');
   readme.writeAsStringSync('''
-# F-Buddy Widgets
+# Credence Widgets
 
-This directory contains reusable Flutter widgets used across the F-Buddy app.
+This directory contains reusable Flutter widgets used across the Credence app.
 
 ## Widgets
 
@@ -27,7 +27,7 @@ AI-powered financial advisory chatbot widget that appears in the Personal Financ
 
 **Usage:**
 ```dart
-import 'package:f_buddy/widgets/rag_chat_widget.dart';
+import 'package:credence/widgets/rag_chat_widget.dart';
 
 // Add to any screen
 Stack(
@@ -61,3 +61,5 @@ Colors and theme adapt automatically to app's light/dark mode.
   
   print('✅ README created successfully!');
 }
+
+

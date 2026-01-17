@@ -58,3 +58,5 @@ class ComingSoonPage extends StatelessWidget {
     );
   }
 }
+
+

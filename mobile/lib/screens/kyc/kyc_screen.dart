@@ -99,7 +99,7 @@ class _KycScreenState extends State<KycScreen> {
               ],
             ),
             content: Text(
-              'Your account has been successfully verified. Welcome to F-Buddy!',
+              'Your account has been successfully verified. Welcome to Credence!',
               textAlign: TextAlign.center,
             ),
             actions: [
@@ -274,3 +274,5 @@ class _KycScreenState extends State<KycScreen> {
     );
   }
 }
+
+

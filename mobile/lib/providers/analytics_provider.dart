@@ -284,3 +284,5 @@ class AnalyticsProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+

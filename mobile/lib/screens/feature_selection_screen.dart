@@ -57,7 +57,7 @@ class FeatureSelectionScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               AutoTranslatedText(
-                'Welcome to F-Buddy',
+                'Welcome to Credence',
                 style: AppTextStyles.heading1.copyWith(color: textPrimaryColor),
                 textAlign: TextAlign.center,
               ),
@@ -238,3 +238,5 @@ class FeatureSelectionScreen extends StatelessWidget {
     );
   }
 }
+
+

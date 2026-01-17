@@ -13,7 +13,7 @@ import 'providers/debt_provider.dart';
 import 'providers/splitwise_provider.dart';
 import 'providers/sms_provider.dart';
 import 'providers/language_provider.dart';
-import 'package:f_buddy/l10n/app_localizations.dart';
+import 'package:credence/l10n/app_localizations.dart';
 import 'screens/splash_screen.dart';
 import 'screens/home/debt_list_screen.dart';
 import 'screens/feature_selection_screen.dart';
@@ -54,10 +54,10 @@ class MyApp extends StatelessWidget {
             onGenerateTitle: (context) => context.l10n.t('app_title'),
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme.copyWith(
-              textTheme: GoogleFonts.poppinsTextTheme(),
+              textTheme: GoogleFonts.interTextTheme(),
             ),
             darkTheme: AppTheme.darkTheme.copyWith(
-              textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
+              textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
             ),
             themeMode: themeProvider.themeMode,
             locale: context.watch<LanguageProvider>().locale,
@@ -93,3 +93,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+

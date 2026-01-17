@@ -5,7 +5,7 @@ import '../../config/theme.dart';
 import '../../screens/feature_selection_screen.dart';
 import '../../widgets/rag_chat_widget.dart';
 import '../../providers/language_provider.dart';
-import 'package:f_buddy/l10n/app_localizations.dart';
+import 'package:credence/l10n/app_localizations.dart';
 import 'calculators/inflation_calculator.dart';
 import 'calculators/investment_return_calculator.dart';
 import 'calculators/retirement_calculator.dart';
@@ -356,3 +356,5 @@ class _NavItem {
 
   _NavItem({required this.id, required this.titleKey, this.titleText});
 }
+
+

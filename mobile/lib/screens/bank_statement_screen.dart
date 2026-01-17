@@ -649,3 +649,5 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
     return num.toStringAsFixed(2);
   }
 }
+
+

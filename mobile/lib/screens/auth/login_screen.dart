@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 32),
                         // Heading
                         const AutoTranslatedText(
-                          'Welcome to F-Buddy',
+                          'Welcome to Credence',
                           style: AppTextStyles.heading2,
                           textAlign: TextAlign.center,
                         ),
@@ -304,3 +304,5 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+
