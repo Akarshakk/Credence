@@ -18,9 +18,10 @@ class ApiConstants {
   // - Use 'localhost' (Android will forward to computer)
   // ====================================================================
   
-  // 🔧 CHANGE THIS FOR REAL DEVICE TESTING:
-  // Example: static const String _serverIp = '192.168.1.100';
-  static const String _serverIp = '192.168.0.105';  // Computer IP for physical device
+  // 🔧 CHANGE THIS BASED ON YOUR PLATFORM:
+  // For Web/Emulator: 'localhost'
+  // For Physical Device: Your computer's IP (e.g., '192.168.0.105')
+  static const String _serverIp = 'localhost';  // Use localhost for web/emulator
   static const String _serverPort = '5001';
   
   // Automatically detect platform and use correct URL

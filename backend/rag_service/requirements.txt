@@ -1,0 +1,32 @@
+# F-Buddy RAG Service Requirements
+# Python dependencies for the RAG (Retrieval Augmented Generation) pipeline
+
+# Core framework
+flask==3.0.0
+flask-cors==4.0.0
+python-dotenv==1.0.0
+
+# Pinecone vector database
+pinecone-client==3.0.0
+
+# LangChain for document processing
+langchain==0.1.0
+langchain-community==0.0.10
+
+# Document loaders
+docx2txt==0.8
+pypdf==3.17.4
+
+# Embeddings
+sentence-transformers==2.2.2
+torch==2.1.2
+torchvision==0.16.2
+
+# Google Gemini AI
+google-generativeai==0.3.2
+
+# Text processing
+unstructured==0.11.8
+
+# Utilities
+tqdm==4.66.1

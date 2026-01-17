@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:permission_handler/permission_handler.dart';
 import '../services/api_service.dart';
 import '../services/notification_service.dart';
@@ -311,6 +312,12 @@ class SmsService {
   /// Request SMS permissions
   Future<bool> requestPermissions() async {
     try {
+      // SMS not available on web
+      if (kIsWeb) {
+        print('[SMS Service] ⚠️  SMS not available on web platform');
+        return false;
+      }
+
       print('[SMS Service] Requesting SMS permission...');
       var status = await Permission.sms.request();
       print('[SMS Service] Permission result: $status');
@@ -475,7 +482,13 @@ class SmsService {
     }
   }
 
-  Future<bool> hasPermissions() async => await Permission.sms.isGranted;
+  Future<bool> hasPermissions() async {
+    // SMS not available on web
+    if (kIsWeb) {
+      return false;
+    }
+    return await Permission.sms.isGranted;
+  }
 
   Future<List<Map<String, dynamic>>> scanExistingSms({int daysBack = 7}) async {
     return await fetchAllSms(daysBack: daysBack);

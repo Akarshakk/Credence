@@ -76,7 +76,7 @@ class FeatureSelectionScreen extends StatelessWidget {
                 subtitle: 'Track your personal expenses\nand income',
                 color: primaryColor,
                 onTap: () {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const HomeScreen()),
                   );
                 },
@@ -91,7 +91,7 @@ class FeatureSelectionScreen extends StatelessWidget {
                 subtitle: 'Split expenses with friends\nand settle up',
                 color: secondaryColor,
                 onTap: () {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                         builder: (_) => const SplitwiseHomeScreen()),
                   );

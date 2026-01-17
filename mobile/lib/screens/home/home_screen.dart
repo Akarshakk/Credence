@@ -10,6 +10,7 @@ import '../../providers/theme_provider.dart';
 import '../../services/debt_reminder_service.dart';
 import '../kyc/kyc_screen.dart';
 import '../splitwise/splitwise_home_screen.dart';
+import '../feature_selection_screen.dart';
 import 'dashboard_tab.dart';
 import 'expenses_tab.dart';
 import 'add_expense_screen.dart';
@@ -35,9 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadData() async {
-    final expenseProvider = Provider.of<ExpenseProvider>(context, listen: false);
+    final expenseProvider =
+        Provider.of<ExpenseProvider>(context, listen: false);
     final incomeProvider = Provider.of<IncomeProvider>(context, listen: false);
-    final analyticsProvider = Provider.of<AnalyticsProvider>(context, listen: false);
+    final analyticsProvider =
+        Provider.of<AnalyticsProvider>(context, listen: false);
     final debtProvider = Provider.of<DebtProvider>(context, listen: false);
 
     await Future.wait([
@@ -63,8 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final bgColor = isDark ? AppColorsDark.background : AppColors.background;
     final surfaceColor = isDark ? AppColorsDark.surface : AppColors.surface;
     final primaryColor = isDark ? AppColorsDark.primary : AppColors.primary;
-    final secondaryColor = isDark ? AppColorsDark.secondary : AppColors.secondary;
-    final textSecondaryColor = isDark ? AppColorsDark.textSecondary : AppColors.textSecondary;
+    final secondaryColor =
+        isDark ? AppColorsDark.secondary : AppColors.secondary;
+    final textSecondaryColor =
+        isDark ? AppColorsDark.textSecondary : AppColors.textSecondary;
 
     // Create tabs with callback for navigation
     final tabs = [
@@ -80,6 +85,13 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: surfaceColor,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: primaryColor),
+          onPressed: () => Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const FeatureSelectionScreen()),
+          ),
+          tooltip: 'Back to Menu',
+        ),
         title: Text(
           'F Buddy',
           style: AppTextStyles.heading2.copyWith(color: primaryColor),
@@ -92,7 +104,9 @@ class _HomeScreenState extends State<HomeScreen> {
               final isVerified = auth.user?.kycStatus == 'VERIFIED';
               return IconButton(
                 icon: Icon(
-                  isVerified ? Icons.verified_user : Icons.verified_user_outlined,
+                  isVerified
+                      ? Icons.verified_user
+                      : Icons.verified_user_outlined,
                   color: isVerified ? Colors.green : Colors.orange,
                 ),
                 tooltip: isVerified ? 'KYC Verified' : 'Complete KYC',
@@ -119,7 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
               color: primaryColor,
             ),
             onPressed: () {
-              final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+              final themeProvider =
+                  Provider.of<ThemeProvider>(context, listen: false);
               themeProvider.toggleTheme();
             },
             tooltip: 'Toggle Theme',
@@ -150,12 +165,19 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Expanded(
               flex: 1,
-              child: _buildNavItem(0, Icons.dashboard_outlined, Icons.dashboard, 'Dashboard', primaryColor, textSecondaryColor),
+              child: _buildNavItem(0, Icons.dashboard_outlined, Icons.dashboard,
+                  'Dashboard', primaryColor, textSecondaryColor),
             ),
             Expanded(
               flex: 1,
               child: Center(
-                child: _buildNavItem(1, Icons.receipt_long_outlined, Icons.receipt_long, 'Expenses', primaryColor, textSecondaryColor),
+                child: _buildNavItem(
+                    1,
+                    Icons.receipt_long_outlined,
+                    Icons.receipt_long,
+                    'Expenses',
+                    primaryColor,
+                    textSecondaryColor),
               ),
             ),
             Expanded(
@@ -164,7 +186,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 alignment: Alignment.center,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 0),
-                  child: _buildNavItem(2, Icons.person_outlined, Icons.person, 'Profile', primaryColor, textSecondaryColor),
+                  child: _buildNavItem(2, Icons.person_outlined, Icons.person,
+                      'Profile', primaryColor, textSecondaryColor),
                 ),
               ),
             ),
@@ -177,9 +200,11 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: secondaryColor,
           elevation: 8,
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const AddExpenseScreen()),
-            ).then((_) => _loadData());
+            Navigator.of(context)
+                .push(
+                  MaterialPageRoute(builder: (_) => const AddExpenseScreen()),
+                )
+                .then((_) => _loadData());
           },
           child: const Icon(
             Icons.add_rounded,
@@ -192,7 +217,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, IconData activeIcon, String label, Color primaryColor, Color textSecondaryColor) {
+  Widget _buildNavItem(int index, IconData icon, IconData activeIcon,
+      String label, Color primaryColor, Color textSecondaryColor) {
     final isSelected = _currentIndex == index;
     return GestureDetector(
       onTap: () => setState(() => _currentIndex = index),
