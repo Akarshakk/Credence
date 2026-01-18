@@ -113,7 +113,7 @@ class _ExpensesTabState extends State<ExpensesTab> {
                         _loadExpenses();
                       },
                       backgroundColor: AppColors.secondaryLight.withOpacity(0.2),
-                      labelStyle: const TextStyle(color: AppColors.secondary),
+                      labelStyle: TextStyle(color: AppColors.secondary),
                       deleteIconColor: AppColors.secondary,
                     ),
                 ],

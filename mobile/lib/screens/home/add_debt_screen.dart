@@ -141,7 +141,7 @@ class _AddDebtScreenState extends State<AddDebtScreen> {
                 MaterialPageRoute(builder: (_) => const DebtListScreen()),
               );
             },
-            icon: const Icon(Icons.history, color: AppColors.primary),
+            icon: Icon(Icons.history, color: AppColors.primary),
             label: const Text(
               'View All',
               style: TextStyle(

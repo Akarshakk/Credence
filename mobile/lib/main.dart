@@ -55,9 +55,11 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme.copyWith(
               textTheme: GoogleFonts.interTextTheme(),
+              visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
             darkTheme: AppTheme.darkTheme.copyWith(
               textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
+              visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
             themeMode: themeProvider.themeMode,
             locale: context.watch<LanguageProvider>().locale,
@@ -73,7 +75,6 @@ class MyApp extends StatelessWidget {
               '/home': (context) => const FeatureSelectionScreen(),
               '/debts': (context) => const DebtListScreen(),
             },
-            // Global overlay to make AI chat available across the app
             builder: (context, child) {
               return Stack(
                 children: [

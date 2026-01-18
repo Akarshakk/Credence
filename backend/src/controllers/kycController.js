@@ -135,19 +135,38 @@ exports.uploadSelfie = async (req, res) => {
 
         console.log(`[KYC] Processing selfie: ${req.file.path}`);
 
-        // Perform Face Matching
-        const score = await faceService.compareFaces(kyc.documentImage, req.file.path);
-        const isMatch = score > 80;
+        // First validate if the selfie contains a face
+        const faceValidation = await faceService.validateFaceInImage(req.file.path);
+        
+        if (!faceValidation.hasFace) {
+            fs.unlinkSync(req.file.path);
+            await KYC.addVerificationHistory(
+                req.user.id,
+                'selfie_validation',
+                'failed',
+                `Face validation failed: ${faceValidation.reason}`
+            );
+            
+            return res.status(400).json({
+                success: false,
+                message: 'No face detected in the selfie. Please take a clear selfie showing your face.',
+                error: 'FACE_NOT_DETECTED'
+            });
+        }
 
-        // Update selfie info
-        await KYC.updateSelfie(req.user.id, req.file.path, score);
+        // Perform Face Matching with enhanced service
+        const matchResult = await faceService.compareFaces(kyc.documentImage, req.file.path);
+        const isMatch = matchResult.isMatch;
 
-        // Add verification history
+        // Update selfie info with detailed results
+        await KYC.updateSelfie(req.user.id, req.file.path, matchResult.score);
+
+        // Add detailed verification history
         await KYC.addVerificationHistory(
             req.user.id,
             'selfie_verification',
             isMatch ? 'success' : 'failed',
-            `Match Score: ${score}`
+            `Match Score: ${matchResult.score}%, Confidence: ${matchResult.confidence}, Reason: ${matchResult.reason}`
         );
 
         if (isMatch) {
@@ -155,22 +174,51 @@ exports.uploadSelfie = async (req, res) => {
 
             res.status(200).json({
                 success: true,
-                message: 'Selfie verified successfully',
-                data: { matchScore: score }
+                message: 'Face verification successful! Your identity has been confirmed.',
+                data: { 
+                    matchScore: matchResult.score,
+                    confidence: matchResult.confidence,
+                    reason: matchResult.reason,
+                    threshold: matchResult.threshold
+                }
             });
         } else {
+            // Don't delete the file immediately, keep for review
             res.status(200).json({
                 success: false,
-                message: 'Face verification failed. Please try again.',
-                data: { matchScore: score }
+                message: `Face verification failed. ${matchResult.reason}. Please ensure good lighting and face the camera directly.`,
+                error: 'FACE_MISMATCH',
+                data: { 
+                    matchScore: matchResult.score,
+                    confidence: matchResult.confidence,
+                    reason: matchResult.reason,
+                    threshold: matchResult.threshold,
+                    suggestions: [
+                        'Ensure good lighting on your face',
+                        'Face the camera directly',
+                        'Remove glasses or hat if wearing',
+                        'Make sure your face is clearly visible'
+                    ]
+                }
             });
         }
 
     } catch (error) {
         if (req.file) fs.unlinkSync(req.file.path);
+        
+        console.error('[KYC] Selfie verification error:', error);
+        
+        // Add error to verification history
+        await KYC.addVerificationHistory(
+            req.user.id,
+            'selfie_verification',
+            'error',
+            `System error: ${error.message}`
+        );
+        
         res.status(500).json({
             success: false,
-            message: 'Error processing selfie',
+            message: 'Error processing selfie verification',
             error: error.message
         });
     }
